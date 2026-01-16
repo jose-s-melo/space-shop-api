@@ -32,9 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### Images ###
-*.png
+### Other Images ###
 *.jpg
 *.jpeg
 *.gif
 *.bmp
+*.xcf
