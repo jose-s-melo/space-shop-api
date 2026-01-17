@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    container_name: space-shop-database
+    environment:
+      POSTGRES_DB: space_shop_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  springboot:
+    build: ./space-shop-api
+    container_name: space-shop-api
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/space_shop_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
