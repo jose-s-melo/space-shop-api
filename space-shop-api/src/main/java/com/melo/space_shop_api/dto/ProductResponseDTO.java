@@ -1,5 +1,7 @@
 package com.melo.space_shop_api.dto;
 
-public record ProductResponseDTO() {
+import java.math.BigDecimal;
+
+public record ProductResponseDTO(String name, BigDecimal price, String description) {
 
 }
