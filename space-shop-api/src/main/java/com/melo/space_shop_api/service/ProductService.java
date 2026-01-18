@@ -41,7 +41,7 @@ public class ProductService {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found.");
+            throw new ProductNotFoundException("Product not found");
         }
 
         repository.deleteById(id);
@@ -54,7 +54,7 @@ public class ProductService {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found.");
+            throw new ProductNotFoundException("Product not found");
         }
 
         return new ProductResponseDTO(optional.get().getName(), optional.get().getPrice(),
@@ -65,7 +65,7 @@ public class ProductService {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found.");
+            throw new ProductNotFoundException("Product not found");
         }
 
         Product product = optional.get();
