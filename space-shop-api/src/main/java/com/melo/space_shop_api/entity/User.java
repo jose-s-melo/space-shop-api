@@ -13,11 +13,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -41,7 +43,7 @@ public class User implements UserDetails {
     @NotBlank
     @Column(name = "role")
     private UserRole role;
-    
+
     public User(Long id, @NotBlank String name, @NotBlank @Email String email, @NotBlank @Size(min = 8) String password,
             @NotBlank UserRole role) {
         this.id = id;
@@ -156,5 +158,4 @@ public class User implements UserDetails {
         }
     }
 
-    
 }
