@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
+import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.Product;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
@@ -58,6 +59,29 @@ public class ProductService {
 
         return new ProductResponseDTO(optional.get().getName(), optional.get().getPrice(),
                 optional.get().getDescription());
+    }
+
+    public ProductResponseDTO updateProduct(Long id, UpdateProductDTO dto) throws ProductNotFoundException {
+        Optional<Product> optional = repository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new ProductNotFoundException("Product not found.");
+        }
+
+        Product product = optional.get();
+
+        if (dto.name() != null && !dto.name().strip().isEmpty()) {
+            product.setName(dto.name());
+        }
+        if (dto.description() != null && !dto.description().strip().isEmpty()) {
+            product.setDescription(dto.description());
+        }
+        if (dto.price() != null && dto.price().signum() != -1) {
+            product.setPrice(dto.price());
+        }
+
+        repository.save(product);
+        return new ProductResponseDTO(product.getName(), product.getPrice(), product.getDescription());
     }
 
     private boolean validateParams(AddProductDTO dto) {
