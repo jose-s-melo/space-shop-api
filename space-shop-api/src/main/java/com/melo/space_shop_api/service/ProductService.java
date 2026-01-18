@@ -49,6 +49,17 @@ public class ProductService {
                 optional.get().getDescription());
     }
 
+    public ProductResponseDTO getProduct(Long id) throws ProductNotFoundException {
+        Optional<Product> optional = repository.findById(id);
+
+        if (optional.isEmpty()) {
+            throw new ProductNotFoundException("Product not found.");
+        }
+
+        return new ProductResponseDTO(optional.get().getName(), optional.get().getPrice(),
+                optional.get().getDescription());
+    }
+
     private boolean validateParams(AddProductDTO dto) {
         boolean valid = true;
         if (dto.name() == null || dto.name().strip().isEmpty()) {
