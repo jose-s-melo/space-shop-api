@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.melo.space_shop_api.dto.AddProductDTO;
 import com.melo.space_shop_api.dto.ProductResponseDTO;
 import com.melo.space_shop_api.entity.Product;
+import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.repository.ProductRepository;
 
 @Service
@@ -16,7 +17,13 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public ProductResponseDTO addProduct(AddProductDTO dto) {
+    
+    public ProductResponseDTO addProduct(AddProductDTO dto) throws InvalidProductException {
+
+        if (!validateParams(dto)) {
+            throw new InvalidProductException("Invalid product field");
+        }
+
         Product product = Product.builder()
                 .name(dto.name())
                 .price(dto.price())
@@ -25,5 +32,17 @@ public class ProductService {
 
         repository.save(product);
         return new ProductResponseDTO(dto.name(), dto.price(),  dto.description());
+    }
+
+    private boolean validateParams(AddProductDTO dto) {
+        boolean valid = true;
+        if (dto.name() == null || dto.name().strip().isEmpty()) {
+            valid = false;
+        } else if (dto.description() == null || dto.description().strip().isEmpty()) {
+            valid = false;
+        } else if (dto.price() == null || dto.price().signum() == -1) {
+            valid = false;
+        }
+        return valid;
     }
 }
