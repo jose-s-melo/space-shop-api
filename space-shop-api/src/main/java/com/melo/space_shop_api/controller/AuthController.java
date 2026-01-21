@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.melo.space_shop_api.dto.auth.RequestLoginDTO;
 import com.melo.space_shop_api.dto.auth.RequestRegisterDTO;
+import com.melo.space_shop_api.dto.auth.TokenResponseDTO;
 import com.melo.space_shop_api.repository.UserRepository;
+import com.melo.space_shop_api.service.TokenService;
 import com.melo.space_shop_api.entity.User;
 
 import jakarta.validation.Valid;
@@ -28,11 +30,17 @@ public class AuthController {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid RequestLoginDTO dto) {
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid RequestLoginDTO dto) {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+
+        String token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new TokenResponseDTO(token));
     }
 
     @PostMapping("/register")
