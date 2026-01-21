@@ -153,7 +153,7 @@ public class User implements UserDetails {
             return this;
         }
 
-        public User build(UserBuilder builder) {
+        public User build() {
             return new User(this);
         }
     }
