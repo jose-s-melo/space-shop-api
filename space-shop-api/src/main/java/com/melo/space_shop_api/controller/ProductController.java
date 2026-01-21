@@ -3,7 +3,6 @@ package com.melo.space_shop_api.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +16,8 @@ import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.service.ProductService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("products")
@@ -34,25 +35,25 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> getProduct(@Validated @PathVariable Long id) {
+    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable Long id) {
         return ResponseEntity.ok(service.getProduct(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> addProduct(@Validated @RequestBody AddProductDTO body) {
+    public ResponseEntity<Void> addProduct(@RequestBody AddProductDTO body) {
         service.addProduct(body);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@Validated @PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         service.deleteProduct(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProduct(@Validated @PathVariable Long id, 
-                                                @Validated @RequestBody UpdateProductDTO body) {
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, 
+                                                @RequestBody UpdateProductDTO body) {
         service.updateProduct(id, body);
         return ResponseEntity.ok().build();
     }
