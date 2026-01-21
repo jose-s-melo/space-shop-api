@@ -17,8 +17,6 @@ import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.service.ProductService;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("products")
 public class ProductController {
