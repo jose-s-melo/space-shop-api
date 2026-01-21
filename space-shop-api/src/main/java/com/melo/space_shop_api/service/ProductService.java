@@ -1,5 +1,6 @@
 package com.melo.space_shop_api.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -82,6 +83,17 @@ public class ProductService {
 
         repository.save(product);
         return new ProductResponseDTO(product.getName(), product.getPrice(), product.getDescription());
+    }
+
+    public List<ProductResponseDTO> getAllProducts() {
+        return repository.findAll()
+                        .stream()
+                        .map(product -> new ProductResponseDTO(
+                            product.getName(), 
+                            product.getPrice(), 
+                            product.getDescription()
+                        ))
+                        .toList();
     }
 
     private boolean validateParams(AddProductDTO dto) {
