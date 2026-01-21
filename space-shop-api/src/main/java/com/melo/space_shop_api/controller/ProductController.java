@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.service.ProductService;
 
@@ -30,5 +33,11 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getProduct(@Validated @PathVariable Long id) {
         return ResponseEntity.ok(service.getProduct(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> addProduct(@RequestBody AddProductDTO body) {
+        service.addProduct(body);
+        return ResponseEntity.ok().build();
     }
 }
