@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
+import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.Product;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
@@ -131,6 +132,24 @@ public class ProductServiceTest {
         assertEquals("Product not found", e.getMessage());
 
         verify(repository, times(1)).findById(Long.valueOf(1));
+    }
+
+    @Test
+    void testUpdateProductSuccessfully() {
+
+        when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
+        when(repository.save(any(Product.class))).thenReturn(defaultProduct);
+
+        UpdateProductDTO dto = new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null);
+
+        ProductResponseDTO response = service.updateProduct(defaultProduct.getId(), dto);
+
+        assertEquals(defaultProduct.getId(), response.id());
+        assertEquals("mouuuuse", response.name());
+        assertEquals(defaultProduct.getDescription(), response.description());
+
+        verify(repository, times(1)).save(defaultProduct);
+
     }
 
 }
