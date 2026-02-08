@@ -1,21 +1,20 @@
 package com.melo.space_shop_api.service;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.melo.space_shop_api.dto.product.AddProductDTO;
@@ -33,6 +32,12 @@ public class ProductServiceTest {
 
     @InjectMocks
     private ProductService service;
+
+    private final Product defaultProduct = new Product(
+                                Long.valueOf(1), 
+                                "mouse", 
+                                BigDecimal.valueOf(24.99), 
+                                "good mouse");
 
     @Test
     void testAddProductSuccessfully() {
@@ -95,11 +100,25 @@ public class ProductServiceTest {
 
         when(repository.findById(Long.valueOf(1))).thenReturn(Optional.empty());
 
-        assertThrows(ProductNotFoundException.class, () -> {
+        Exception e = assertThrows(ProductNotFoundException.class, () -> {
             service.deleteProduct(Long.valueOf(1));
         });
 
+        assertEquals("Product not found", e.getMessage());
+
         verify(repository, never()).deleteById(any());
+    }
+
+    @Test
+    void testGetProductSuccessfully() {
+
+        when(repository.findById(Long.valueOf(1))).thenReturn(Optional.of(defaultProduct));
+
+        ProductResponseDTO response = service.deleteProduct(defaultProduct.getId());
+
+        assertEquals("mouse", response.name());
+
+        verify(repository, times(1)).findById(defaultProduct.getId());
     }
 
 }
