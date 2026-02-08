@@ -121,4 +121,16 @@ public class ProductServiceTest {
         verify(repository, times(1)).findById(defaultProduct.getId());
     }
 
+    @Test
+    void testGetProductNotFound() {
+
+        when(repository.findById(Long.valueOf(1))).thenReturn(Optional.empty());
+
+        Exception e = assertThrows(ProductNotFoundException.class, () -> service.getProduct(Long.valueOf(1)));
+
+        assertEquals("Product not found", e.getMessage());
+
+        verify(repository, times(1)).findById(Long.valueOf(1));
+    }
+
 }
