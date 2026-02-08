@@ -25,7 +25,7 @@ public class ProductService {
     public ProductResponseDTO addProduct(AddProductDTO dto) throws InvalidProductException {
 
         if (!validateParams(dto)) {
-            throw new InvalidProductException("Invalid product field");
+            throw new InvalidProductException();
         }
 
         Product product = Product.builder()
@@ -34,20 +34,20 @@ public class ProductService {
                 .description(dto.description())
                 .build();
 
-        repository.save(product);
-        return new ProductResponseDTO(dto.name(), dto.price(), dto.description());
+        Product saved = repository.save(product);
+        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description());
     }
 
     public ProductResponseDTO deleteProduct(Long id) throws ProductNotFoundException {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException();
         }
 
         repository.deleteById(id);
 
-        return new ProductResponseDTO(optional.get().getName(), optional.get().getPrice(),
+        return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
                 optional.get().getDescription());
     }
 
@@ -55,10 +55,10 @@ public class ProductService {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException();
         }
 
-        return new ProductResponseDTO(optional.get().getName(), optional.get().getPrice(),
+        return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
                 optional.get().getDescription());
     }
 
@@ -66,7 +66,7 @@ public class ProductService {
         Optional<Product> optional = repository.findById(id);
 
         if (optional.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException();
         }
 
         Product product = optional.get();
@@ -82,13 +82,14 @@ public class ProductService {
         }
 
         repository.save(product);
-        return new ProductResponseDTO(product.getName(), product.getPrice(), product.getDescription());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription());
     }
 
     public List<ProductResponseDTO> getAllProducts() {
         return repository.findAll()
                         .stream()
                         .map(product -> new ProductResponseDTO(
+                            product.getId(),
                             product.getName(), 
                             product.getPrice(), 
                             product.getDescription()
