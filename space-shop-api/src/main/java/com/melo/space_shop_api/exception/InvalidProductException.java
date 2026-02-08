@@ -11,8 +11,10 @@ package com.melo.space_shop_api.exception;
  */
 public class InvalidProductException extends IllegalArgumentException {
 
+    public static final String DEFAULT_MESSAGE = "Invalid product field";
+
     public InvalidProductException() {
-        super("Invalid product field");
+        super(DEFAULT_MESSAGE);
     }
 
     public InvalidProductException(String message) {

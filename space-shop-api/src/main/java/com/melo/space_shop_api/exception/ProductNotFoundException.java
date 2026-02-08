@@ -9,8 +9,10 @@ package com.melo.space_shop_api.exception;
  */
 public class ProductNotFoundException extends RuntimeException {
 
+    public static final String DEFAULT_MESSAGE = "Product not found";
+
     public ProductNotFoundException() {
-        super("Product not found");
+        super(DEFAULT_MESSAGE);
     }
 
     public ProductNotFoundException(String message) {

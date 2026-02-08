@@ -74,7 +74,7 @@ public class ProductServiceTest {
             service.addProduct(dto);
         });
 
-        assertEquals("Invalid product field", e.getMessage());
+        assertEquals(InvalidProductException.DEFAULT_MESSAGE, e.getMessage());
 
         verify(repository, never()).save(any());
     }
@@ -105,7 +105,7 @@ public class ProductServiceTest {
             service.deleteProduct(Long.valueOf(1));
         });
 
-        assertEquals("Product not found", e.getMessage());
+        assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
 
         verify(repository, never()).deleteById(any());
     }
@@ -129,7 +129,7 @@ public class ProductServiceTest {
 
         Exception e = assertThrows(ProductNotFoundException.class, () -> service.getProduct(Long.valueOf(1)));
 
-        assertEquals("Product not found", e.getMessage());
+        assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
 
         verify(repository, times(1)).findById(Long.valueOf(1));
     }
@@ -160,7 +160,7 @@ public class ProductServiceTest {
         Exception e = assertThrows(ProductNotFoundException.class, 
             () -> service.updateProduct(defaultProduct.getId(), new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null)));
 
-        assertEquals("Product not found", e.getMessage());
+        assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
 
         verify(repository, times(1)).findById(defaultProduct.getId());
         verify(repository, times(0)).save(any(Product.class));
