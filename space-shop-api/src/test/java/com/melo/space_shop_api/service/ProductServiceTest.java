@@ -38,7 +38,8 @@ public class ProductServiceTest {
                                 Long.valueOf(1), 
                                 "mouse", 
                                 BigDecimal.valueOf(24.99), 
-                                "good mouse");
+                                "good mouse",
+                                12);
 
     @Test
     void testAddProductSuccessfully() {
