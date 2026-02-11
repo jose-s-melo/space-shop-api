@@ -23,4 +23,8 @@ public class CartRepository {
         redisTemplate.expire(key, Duration.ofHours(24));
     }
 
+    public void removeItem(Long userId, Long productId) {
+        redisTemplate.opsForHash().delete(buildKey(userId), productId.toString());
+    }
+
 }
