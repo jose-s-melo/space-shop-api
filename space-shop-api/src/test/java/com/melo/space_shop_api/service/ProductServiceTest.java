@@ -46,7 +46,8 @@ public class ProductServiceTest {
         AddProductDTO dto = new AddProductDTO(
                 "test",
                 BigDecimal.valueOf(100.00),
-                "test");
+                "test",
+                Integer.valueOf(15));
 
         Product product = Product.builder()
                 .name(dto.name())
@@ -69,7 +70,8 @@ public class ProductServiceTest {
         AddProductDTO dto = new AddProductDTO(
                 "",
                 BigDecimal.valueOf(-100.00),
-                "             ");
+                "             ",
+                Integer.valueOf(-1));
 
         InvalidProductException e = assertThrows(InvalidProductException.class, () -> {
             service.addProduct(dto);
@@ -141,7 +143,7 @@ public class ProductServiceTest {
         when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
         when(repository.save(any(Product.class))).thenReturn(defaultProduct);
 
-        UpdateProductDTO dto = new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null);
+        UpdateProductDTO dto = new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null, null);
 
         ProductResponseDTO response = service.updateProduct(defaultProduct.getId(), dto);
 
@@ -159,7 +161,7 @@ public class ProductServiceTest {
         when(repository.findById(defaultProduct.getId())).thenReturn(Optional.empty());
 
         Exception e = assertThrows(ProductNotFoundException.class, 
-            () -> service.updateProduct(defaultProduct.getId(), new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null)));
+            () -> service.updateProduct(defaultProduct.getId(), new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null, null)));
 
         assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
 

@@ -32,10 +32,11 @@ public class ProductService {
                 .name(dto.name())
                 .price(dto.price())
                 .description(dto.description())
+                .stock(dto.stock())
                 .build();
 
         Product saved = repository.save(product);
-        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description());
+        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description(), dto.stock());
     }
 
     public ProductResponseDTO deleteProduct(Long id) throws ProductNotFoundException {
@@ -48,7 +49,7 @@ public class ProductService {
         repository.deleteById(id);
 
         return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
-                optional.get().getDescription());
+                optional.get().getDescription(), optional.get().getStock());
     }
 
     public ProductResponseDTO getProduct(Long id) throws ProductNotFoundException {
@@ -59,7 +60,7 @@ public class ProductService {
         }
 
         return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
-                optional.get().getDescription());
+                optional.get().getDescription(), optional.get().getStock());
     }
 
     public ProductResponseDTO updateProduct(Long id, UpdateProductDTO dto) throws ProductNotFoundException {
@@ -80,9 +81,12 @@ public class ProductService {
         if (dto.price() != null && dto.price().signum() != -1) {
             product.setPrice(dto.price());
         }
+        if (dto.stock() != null && dto.stock().compareTo(Integer.valueOf(0)) >= 0) {
+            product.setStock(dto.stock());
+        }
 
         repository.save(product);
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStock());
     }
 
     public List<ProductResponseDTO> getAllProducts() {
@@ -92,7 +96,8 @@ public class ProductService {
                             product.getId(),
                             product.getName(), 
                             product.getPrice(), 
-                            product.getDescription()
+                            product.getDescription(),
+                            product.getStock()
                         ))
                         .toList();
     }
@@ -104,6 +109,8 @@ public class ProductService {
         } else if (dto.description() == null || dto.description().strip().isEmpty()) {
             valid = false;
         } else if (dto.price() == null || dto.price().signum() == -1) {
+            valid = false;
+        } else if (dto.stock() == null || dto.stock().compareTo(Integer.valueOf(0)) < 0) {
             valid = false;
         }
         return valid;
