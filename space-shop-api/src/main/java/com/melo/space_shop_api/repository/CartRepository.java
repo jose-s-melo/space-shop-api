@@ -27,4 +27,8 @@ public class CartRepository {
         redisTemplate.opsForHash().delete(buildKey(userId), productId.toString());
     }
 
+    public void clear(Long userId) {
+        redisTemplate.opsForHash().delete(buildKey(userId));
+    }
+
 }
