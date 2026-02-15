@@ -31,7 +31,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
