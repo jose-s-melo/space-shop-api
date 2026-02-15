@@ -171,4 +171,8 @@ public class Order {
         }
         return total;
     }
+
+    public void addItem(OrderItem orderItem) {
+        this.items.add(orderItem);
+    }
 }
