@@ -2,27 +2,19 @@ package com.melo.space_shop_api.entity.cart;
 
 import java.math.BigDecimal;
 
-import com.melo.space_shop_api.entity.product.Product;
-
 public class CartItem {
 
-    private Product product;
+    private Long productId;
+    private BigDecimal price; 
     private Integer quantity;
 
     public CartItem() {
     }
 
-    public CartItem(Product product, Integer quantity) {
-        this.product = product;
+    public CartItem(Long productId, BigDecimal price, Integer quantity) {
+        this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+        this.price = price;
     }
 
     public Integer getQuantity() {
@@ -34,7 +26,25 @@ public class CartItem {
     }
 
     public BigDecimal getGT() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    
     
 }
