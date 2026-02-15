@@ -1,4 +1,8 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.cart;
+
+import java.math.BigDecimal;
+
+import com.melo.space_shop_api.entity.product.Product;
 
 public class CartItem {
 
@@ -29,5 +33,8 @@ public class CartItem {
         this.quantity = quantity;
     }
 
+    public BigDecimal getGT() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
     
 }

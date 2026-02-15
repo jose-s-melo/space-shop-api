@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.product;
 
 import java.math.BigDecimal;
 import java.util.HashSet;

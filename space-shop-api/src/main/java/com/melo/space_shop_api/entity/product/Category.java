@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.product;
 
 import java.util.HashSet;
 import java.util.Set;

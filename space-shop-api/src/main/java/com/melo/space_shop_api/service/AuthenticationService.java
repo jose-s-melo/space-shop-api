@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.melo.space_shop_api.dto.auth.RequestLoginDTO;
 import com.melo.space_shop_api.dto.auth.TokenResponseDTO;
-import com.melo.space_shop_api.entity.User;
+import com.melo.space_shop_api.entity.user.User;
 
 @Service
 public class AuthenticationService {

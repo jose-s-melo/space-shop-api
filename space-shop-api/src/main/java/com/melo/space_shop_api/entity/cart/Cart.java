@@ -1,6 +1,9 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.cart;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import com.melo.space_shop_api.entity.user.User;
 
 public class Cart {
 
@@ -29,6 +32,16 @@ public class Cart {
 
     public void setCart(List<CartItem> cart) {
         this.cart = cart;
+    }
+
+    public BigDecimal getTotal() {
+        BigDecimal sum = BigDecimal.ZERO;
+        
+        for (CartItem ci : cart) {
+            sum = sum.add(ci.getGT());
+        }
+
+        return sum;
     }
     
 }

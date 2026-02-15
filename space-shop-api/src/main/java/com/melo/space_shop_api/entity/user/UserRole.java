@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.user;
 
 public enum UserRole {
     ROLE_ADMIN("ROLE_ADMIN"),
