@@ -76,6 +76,7 @@ public class Product {
 
     private Product(ProductBuilder builder) {
         categories = new HashSet<>();
+        this.id = builder.id;
         this.name = builder.name;
         this.price = builder.price;
         this.description = builder.description;
@@ -137,10 +138,16 @@ public class Product {
 
     public static class ProductBuilder {
 
+        private Long id;
         private String name;
         private BigDecimal price;
         private String description;
         private Integer stock;
+
+        public ProductBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public ProductBuilder name(String name) {
             this.name = name;
