@@ -96,4 +96,13 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
     }
+
+    public void sendOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+        if (order.getPaymentStatus() == PaymentStatus.APPROVED) {
+            order.setOrderStatus(OrderStatus.SHIPPED);
+            order.setShippedAt(Instant.now());
+            orderRepository.save(order);
+        }
+    }
 }

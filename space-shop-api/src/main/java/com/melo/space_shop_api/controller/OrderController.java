@@ -35,4 +35,10 @@ public class OrderController {
         orderService.cancelOrder(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/send")
+    public ResponseEntity<Void> sendOrder(@PathVariable Long id) {
+        orderService.sendOrder(id);
+        return ResponseEntity.ok().build();
+    }
 }
