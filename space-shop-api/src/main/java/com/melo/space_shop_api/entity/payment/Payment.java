@@ -2,6 +2,7 @@ package com.melo.space_shop_api.entity.payment;
 
 import java.math.BigDecimal;
 
+import com.melo.space_shop_api.entity.order.Order;
 import com.melo.space_shop_api.entity.user.User;
 
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Positive;
 
@@ -39,12 +41,17 @@ public class Payment {
     @JoinColumn(name="user_id")
     private User user;
 
-    public Payment(Long id, @Positive BigDecimal value, PaymentMethod method, PaymentStatus status, User user) {
+    @OneToOne
+    @JoinColumn(name="order_id")
+    private Order order;
+
+    public Payment(Long id, @Positive BigDecimal value, PaymentMethod method, PaymentStatus status, User user, Order order) {
         this.id = id;
         this.value = value;
         this.method = method;
         this.status = status;
         this.user = user;
+        this.order = order;
     }
 
     public Payment() {
@@ -88,6 +95,14 @@ public class Payment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     
