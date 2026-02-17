@@ -1,5 +1,6 @@
 package com.melo.space_shop_api.service;
 
+import java.time.Instant;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.melo.space_shop_api.entity.order.OrderStatus;
 import com.melo.space_shop_api.entity.payment.PaymentStatus;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.user.User;
+import com.melo.space_shop_api.exception.OrderNotFoundException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.OrderItemRepository;
 import com.melo.space_shop_api.repository.OrderRepository;
@@ -73,6 +75,25 @@ public class OrderService {
     }
 
     public PaymentMessageDTO payOrder(Long orderId) {
-        return paymentService.pay(orderId);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+        order.setPaymentStatus(PaymentStatus.PENDING);
+        order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        PaymentMessageDTO response = paymentService.pay(orderId);
+        
+        if (response.message().equals("Approved")) {
+            order.setOrderStatus(OrderStatus.PAID);
+            order.setPaymentStatus(PaymentStatus.APPROVED);
+            order.setPaidAt(Instant.now());
+        };
+
+        orderRepository.save(order);
+        return response;
+    }
+
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+        order.setOrderStatus(OrderStatus.CANCELED);
+        orderRepository.save(order);
     }
 }
