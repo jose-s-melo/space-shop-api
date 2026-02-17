@@ -5,8 +5,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.melo.space_shop_api.dto.order.OrderResponseDTO;
 import com.melo.space_shop_api.dto.payment.PaymentMessageDTO;
 import com.melo.space_shop_api.dto.payment.PaymentRequestDTO;
+import com.melo.space_shop_api.dto.payment.PaymentResponseDTO;
 import com.melo.space_shop_api.entity.order.Order;
 import com.melo.space_shop_api.entity.order.OrderItem;
 import com.melo.space_shop_api.entity.order.OrderStatus;
@@ -40,7 +42,7 @@ public class OrderService {
     @Autowired
     private PaymentService paymentService;
 
-    public void createOrder() {
+    public OrderResponseDTO createOrder() {
         User user = authenticationService.getCurrentUser();
 
         Map<Long, Integer> products = cartRepository.getCart(user.getId());
@@ -65,8 +67,9 @@ public class OrderService {
         order.setPaymentStatus(PaymentStatus.PENDING);
         order.setUser(user);
         
-        paymentService.createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
-        orderRepository.save(order);
+        PaymentResponseDTO paymentResponse = paymentService.createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
+        Order saved = orderRepository.save(order);
+        return new OrderResponseDTO(saved.getId(), user.getId(), paymentResponse.id());
     }
 
     public PaymentMessageDTO payOrder(Long orderId) {
