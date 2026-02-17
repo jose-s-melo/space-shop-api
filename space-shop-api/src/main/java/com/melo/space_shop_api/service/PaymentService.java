@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.melo.space_shop_api.dto.payment.PaymentAuthorization;
+import com.melo.space_shop_api.dto.payment.PaymentMessageDTO;
 import com.melo.space_shop_api.dto.payment.PaymentRequestDTO;
 import com.melo.space_shop_api.dto.payment.PaymentResponseDTO;
 import com.melo.space_shop_api.entity.payment.Payment;
@@ -40,18 +41,33 @@ public class PaymentService {
     }
 
     @Transactional
-    public void pay(Long id) {
-        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException());
+    public PaymentMessageDTO pay(Long orderId) {
+        Payment payment = getByOrder(orderId);
         PaymentAuthorization authorization = paymentAuthorization();
+        PaymentMessageDTO response;
 
         if (authorization.auth()) {
             payment.setMethod(authorization.method());
             payment.setStatus(PaymentStatus.APPROVED);
+            response = new PaymentMessageDTO("Approved");
         } else {
             payment.setStatus(PaymentStatus.FAILED);
+            response = new PaymentMessageDTO("Failed");
         }
 
         paymentRepository.save(payment);
+        return response;
+    }
+
+    public void cancelPayment(Long id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException());
+        payment.setStatus(PaymentStatus.CANCELED);
+
+        paymentRepository.save(payment);
+    }
+
+    protected Payment getByOrder(Long orderId) {
+        return paymentRepository.findByOrderId(orderId).orElseThrow(() -> new PaymentNotFoundException());
     }
 
     private PaymentAuthorization paymentAuthorization() {
