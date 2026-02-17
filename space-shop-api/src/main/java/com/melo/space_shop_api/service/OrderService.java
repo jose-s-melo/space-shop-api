@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.melo.space_shop_api.dto.payment.PaymentMessageDTO;
 import com.melo.space_shop_api.dto.payment.PaymentRequestDTO;
 import com.melo.space_shop_api.entity.order.Order;
 import com.melo.space_shop_api.entity.order.OrderItem;
@@ -68,7 +69,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public void payOrder(Long id) {
-        paymentService.pay(id);
+    public PaymentMessageDTO payOrder(Long orderId) {
+        return paymentService.pay(orderId);
     }
 }
