@@ -25,7 +25,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder());
     }
 
-    @PostMapping("/{}")
+    @PostMapping("/{id}")
     public ResponseEntity<PaymentMessageDTO> payOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.payOrder(id));
     }
