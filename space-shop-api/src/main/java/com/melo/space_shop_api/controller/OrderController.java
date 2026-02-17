@@ -29,4 +29,10 @@ public class OrderController {
     public ResponseEntity<PaymentMessageDTO> payOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.payOrder(id));
     }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ResponseEntity.ok().build();
+    }
 }
