@@ -1,6 +1,7 @@
 package com.melo.space_shop_api.entity.payment;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import com.melo.space_shop_api.entity.order.Order;
 import com.melo.space_shop_api.entity.user.User;
@@ -19,15 +20,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Positive;
 
 @Entity
-@Table(name="payments")
+@Table(name = "payments")
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Positive
-    @Column(nullable=false)
+    @Column(nullable = false, name = "amount")
     private BigDecimal value;
 
     @Enumerated(EnumType.STRING)
@@ -38,20 +39,25 @@ public class Payment {
     private PaymentStatus status;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne
-    @JoinColumn(name="order_id")
+    @JoinColumn(name = "order_id")
     private Order order;
 
-    public Payment(Long id, @Positive BigDecimal value, PaymentMethod method, PaymentStatus status, User user, Order order) {
+    @Column(name = "paid_at")
+    private Instant paidAt;
+
+    public Payment(Long id, @Positive BigDecimal value, PaymentMethod method, PaymentStatus status, User user,
+            Order order, Instant paidAt) {
         this.id = id;
         this.value = value;
         this.method = method;
         this.status = status;
         this.user = user;
         this.order = order;
+        this.paidAt = paidAt;
     }
 
     public Payment() {
@@ -105,7 +111,12 @@ public class Payment {
         this.order = order;
     }
 
-    
+    public Instant getPaidAt() {
+        return paidAt;
+    }
 
+    public void setPaidAt(Instant paidAt) {
+        this.paidAt = paidAt;
+    }
 
 }
