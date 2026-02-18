@@ -10,7 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
@@ -27,12 +27,16 @@ public class Category {
     @Column(nullable=false)
     private CategoryEnum name;
 
-    @ManyToMany(mappedBy = "categories")
-    private Set<Product> products = new HashSet<>();
+    @Column(nullable=false)
+    private String description;
 
-    public Category(Long id, @NotNull CategoryEnum name) {
+    @OneToMany(mappedBy = "category")
+    private Set<ProductCategory> products = new HashSet<>();
+
+    public Category(Long id, @NotNull CategoryEnum name, String description) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.products = new HashSet<>();
     }
 
@@ -56,12 +60,20 @@ public class Category {
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
+    public Set<ProductCategory> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(Set<ProductCategory> products) {
         this.products = products;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     

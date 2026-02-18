@@ -9,13 +9,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -48,26 +47,25 @@ public class Product {
     private String description;
 
     @NotNull
-    @Positive
+    @PositiveOrZero
     @Column(nullable=false)
     private Integer stock;
 
-    @ManyToMany
-    @JoinTable(
-        name="product_categories",
-        joinColumns= @JoinColumn(name="product_id"),
-        inverseJoinColumns=@JoinColumn(name="category_id")
-    )
+    @OneToMany(mappedBy = "product")
     private Set<Category> categories;
 
+    @Column(nullable=false, unique=true)
+    private String sku;
+
     public Product(Long id, @NotBlank String name, @NotBlank BigDecimal price,
-            @NotBlank @Size(max = 500) String description, Integer stock) {
+            @NotBlank @Size(max = 500) String description, Integer stock, String sku) {
         categories = new HashSet<>();
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
+        this.sku = sku;
     }
 
     public Product() {
@@ -133,6 +131,14 @@ public class Product {
 
     public static ProductBuilder builder() {
         return new ProductBuilder();
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
 
