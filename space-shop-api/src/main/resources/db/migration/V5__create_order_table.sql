@@ -1,11 +1,8 @@
 CREATE TABLE orders (
     id BIGSERIAL PRIMARY KEY,
-
     user_id BIGINT NOT NULL,
-
     order_status VARCHAR(50) NOT NULL,
     payment_status VARCHAR(50) NOT NULL,
-
     created_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE,
     paid_at TIMESTAMP WITH TIME ZONE,

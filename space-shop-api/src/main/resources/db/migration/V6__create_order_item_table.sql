@@ -1,9 +1,7 @@
 CREATE TABLE order_item (
     id BIGSERIAL PRIMARY KEY,
-
     order_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
-
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     price_at_purchase NUMERIC(10,2) NOT NULL,
 
