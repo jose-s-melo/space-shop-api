@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.entity;
+package com.melo.space_shop_api.entity.user;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long id;
 
     @NotBlank
@@ -65,7 +66,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<? extends GrantedAuthority> authorities = null;
+        Collection<? extends GrantedAuthority> authorities;
 
         if (role == UserRole.ROLE_ADMIN) {
             authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));

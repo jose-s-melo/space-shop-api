@@ -1,11 +1,12 @@
-package com.melo.space_shop_api.repository;
+package com.melo.space_shop_api.repository.redis;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-
 
 @Repository
 public class CartRepository {
@@ -31,4 +32,17 @@ public class CartRepository {
         redisTemplate.opsForHash().delete(buildKey(userId));
     }
 
+    public Map<Long, Integer> getCart(Long userId) {
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(buildKey(userId));
+
+        Map<Long, Integer> cart = new HashMap<>();
+
+        for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+            Long productId = Long.valueOf(entry.getKey().toString());
+            Integer quantity = Integer.valueOf(entry.getValue().toString());
+            cart.put(productId, quantity);
+        }
+
+        return cart;
+    }
 }

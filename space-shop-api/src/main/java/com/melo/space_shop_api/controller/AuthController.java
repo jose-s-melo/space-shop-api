@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.melo.space_shop_api.dto.auth.RequestLoginDTO;
 import com.melo.space_shop_api.dto.auth.RequestRegisterDTO;
 import com.melo.space_shop_api.dto.auth.TokenResponseDTO;
-import com.melo.space_shop_api.entity.User;
+import com.melo.space_shop_api.entity.user.User;
 import com.melo.space_shop_api.repository.UserRepository;
 import com.melo.space_shop_api.service.AuthenticationService;
 

@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.repository;
+package com.melo.space_shop_api.repository.redis;
 
 import java.lang.reflect.Method;
 

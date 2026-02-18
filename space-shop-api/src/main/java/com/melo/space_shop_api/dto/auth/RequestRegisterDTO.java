@@ -1,6 +1,6 @@
 package com.melo.space_shop_api.dto.auth;
 
-import com.melo.space_shop_api.entity.UserRole;
+import com.melo.space_shop_api.entity.user.UserRole;
 
 public record RequestRegisterDTO(
     String name, 

@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
-import com.melo.space_shop_api.entity.Product;
+import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.ProductRepository;
@@ -39,15 +39,14 @@ public class ProductServiceTest {
                                 "mouse", 
                                 BigDecimal.valueOf(24.99), 
                                 "good mouse",
-                                12);
+                                12, "123");
 
     @Test
     void testAddProductSuccessfully() {
         AddProductDTO dto = new AddProductDTO(
                 "test",
                 BigDecimal.valueOf(100.00),
-                "test",
-                Integer.valueOf(15));
+                "test", 15);
 
         Product product = Product.builder()
                 .name(dto.name())
