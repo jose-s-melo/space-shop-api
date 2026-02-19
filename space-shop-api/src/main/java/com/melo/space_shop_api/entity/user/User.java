@@ -24,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
+    @Column(name="id")
     private Long id;
 
     @NotBlank
@@ -45,13 +45,23 @@ public class User implements UserDetails {
     @Column(name = "role")
     private UserRole role;
 
+    @Column(name="cpf", nullable = false)
+    @Size(max = 11, min = 11)
+    private String cpf;
+
+    @Column(name="phone", nullable = false)
+    @Size(max = 11, min = 11)
+    private String phone;
+
     public User(Long id, @NotBlank String name, @NotBlank @Email String email, @NotBlank @Size(min = 8) String password,
-            @NotBlank UserRole role) {
+            @NotBlank UserRole role, String cpf, String phone) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.cpf = cpf;
+        this.phone = phone;
     }
 
     public User() {
@@ -62,6 +72,8 @@ public class User implements UserDetails {
         this.email = builder.email;
         this.password = builder.password;
         this.role = builder.role;
+        this.cpf = builder.cpf;
+        this.phone = builder.phone;
     }
 
     @Override
@@ -127,12 +139,30 @@ public class User implements UserDetails {
         return new UserBuilder();
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public static class UserBuilder {
 
         private String name;
         private String email;
         private String password;
         private UserRole role;
+        private String cpf;
+        private String phone;
 
         public UserBuilder name(String name) {
             this.name = name;
@@ -151,6 +181,16 @@ public class User implements UserDetails {
 
         public UserBuilder role(UserRole role) {
             this.role = role;
+            return this;
+        }
+
+        public UserBuilder cpf(String cpf) {
+            this.cpf = cpf;
+            return this;
+        }
+
+        public UserBuilder phone(String phone) {
+            this.phone = phone;
             return this;
         }
 
