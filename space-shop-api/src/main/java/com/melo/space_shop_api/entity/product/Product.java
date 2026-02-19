@@ -52,7 +52,7 @@ public class Product {
     private Integer stock;
 
     @OneToMany(mappedBy = "product")
-    private Set<Category> categories;
+    private Set<ProductCategory> categories;
 
     @Column(nullable=false, unique=true)
     private String sku;
@@ -121,11 +121,11 @@ public class Product {
         this.stock = stock;
     }
 
-    public Set<Category> getCategories() {
+    public Set<ProductCategory> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Category> categories) {
+    public void setCategories(Set<ProductCategory> categories) {
         this.categories = categories;
     }
 
