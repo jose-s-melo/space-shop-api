@@ -69,8 +69,7 @@ public class ProductServiceTest {
         AddProductDTO dto = new AddProductDTO(
                 "",
                 BigDecimal.valueOf(-100.00),
-                "             ",
-                Integer.valueOf(-1));
+                "             ", -1);
 
         InvalidProductException e = assertThrows(InvalidProductException.class, () -> {
             service.addProduct(dto);

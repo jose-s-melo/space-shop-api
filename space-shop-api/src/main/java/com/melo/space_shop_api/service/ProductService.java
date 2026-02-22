@@ -22,6 +22,14 @@ public class ProductService {
         this.repository = repository;
     }
 
+    /**
+     * Adds a new product to the repository after validating the input parameters.
+     * The method checks if the product name, description, price, and stock are valid. 
+     * If any of the parameters are invalid, it throws an InvalidProductException.
+     * @param dto
+     * @return ProductResponseDTO containing the details of the added product
+     * @throws InvalidProductException if any of the input parameters are invalid
+     */
     public ProductResponseDTO addProduct(AddProductDTO dto) throws InvalidProductException {
 
         if (!validateParams(dto)) {
@@ -81,7 +89,7 @@ public class ProductService {
         if (dto.price() != null && dto.price().signum() != -1) {
             product.setPrice(dto.price());
         }
-        if (dto.stock() != null && dto.stock().compareTo(Integer.valueOf(0)) >= 0) {
+        if (dto.stock() != null && dto.stock().compareTo(0) >= 0) {
             product.setStock(dto.stock());
         }
 
@@ -110,7 +118,7 @@ public class ProductService {
             valid = false;
         } else if (dto.price() == null || dto.price().signum() == -1) {
             valid = false;
-        } else if (dto.stock() == null || dto.stock().compareTo(Integer.valueOf(0)) < 0) {
+        } else if (dto.stock() == null || dto.stock().compareTo(0) < 0) {
             valid = false;
         }
         return valid;
