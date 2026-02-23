@@ -2,67 +2,67 @@ name: CI - Space Shop API
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-  services:
-    postgres:
-      image: postgres:16
-      env:
-        POSTGRES_DB: space_shop_db
-        POSTGRES_USER: root
-        POSTGRES_PASSWORD: admin
-      ports:
-        - 5432:5432
-      options: >-
-        --health-cmd="pg_isready -U root -d space_shop_db"
-        --health-interval=10s
-        --health-timeout=5s
-        --health-retries=5
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: space_shop_db
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: admin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U root -d space_shop_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-    redis:
-      image: redis:7
-      ports:
-        - 6379:6379
-      options: >-
-        --health-cmd="redis-cli ping"
-        --health-interval=10s
-        --health-timeout=5s
-        --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: 21
-        cache: maven
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
 
-    - name: Wait for Postgres
-      run: |
-        until pg_isready -h localhost -p 5432 -U root; do
-          echo "Waiting for postgres..."
-          sleep 2
-        done
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -p 5432 -U root; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
 
-    - name: Build and Test
-      run: mvn clean verify
-      working-directory: ./space-shop-api
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/space_shop_db
-        SPRING_DATASOURCE_USERNAME: root
-        SPRING_DATASOURCE_PASSWORD: admin
-        SPRING_JPA_HIBERNATE_DDL_AUTO: update
-        JWT_SECRET: testsecret
+      - name: Build and Test
+        run: mvn clean verify
+        working-directory: ./space-shop-api
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/space_shop_db
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: admin
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          JWT_SECRET: testsecret
 
-    - name: Build Docker image
-      run: docker build -t space-shop-api .
-      working-directory: ./space-shop-api
+      - name: Build Docker image
+        run: docker build -t space-shop-api .
+        working-directory: ./space-shop-api
