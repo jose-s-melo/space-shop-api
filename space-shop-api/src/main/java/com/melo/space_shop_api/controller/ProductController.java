@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
+import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.service.ProductService;
 
 @RestController
@@ -39,8 +40,14 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Void> addProduct(@RequestBody AddProductDTO body) {
-        service.addProduct(body);
-        return ResponseEntity.ok().build();
+        ResponseEntity<Void> response;
+        try {
+            service.addProduct(body);
+            response = ResponseEntity.noContent().build();
+        } catch (InvalidProductException e) {
+            response = ResponseEntity.badRequest().build();
+        }
+        return response;
     }
 
     @DeleteMapping("/{id}")

@@ -8,5 +8,6 @@ public record ProductResponseDTO(
     String name, 
     BigDecimal price, 
     String description, 
-    Integer stock
-    ) implements Serializable {}
+    Integer stock,
+    String sku
+) implements Serializable {}
