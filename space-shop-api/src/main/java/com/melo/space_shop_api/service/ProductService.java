@@ -150,11 +150,15 @@ public class ProductService {
     public void addCategoryToProduct(Long categoryId, Long productId) {
         Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException());
+        
         ProductCategory pc = new ProductCategory(product, category);
         pc = productCategoryRepository.save(pc);
 
-        product.addCategory(pc);
+        product.addProductCategory(pc);
         repository.save(product);
+
+        category.addProductCategory(pc);
+        categoryRepository.save(category);
     }
 
     private boolean validateProductParams(AddProductDTO dto) {

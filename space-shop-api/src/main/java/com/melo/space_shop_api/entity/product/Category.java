@@ -44,6 +44,14 @@ public class Category {
         products = new HashSet<>();
     }
 
+    public boolean addProductCategory(ProductCategory pc) {
+        return products.add(pc);
+    }
+
+    public boolean removeProductCategory(ProductCategory pc) {
+        return products.remove(pc);
+    }
+
     public Long getId() {
         return id;
     }
