@@ -46,12 +46,14 @@ public class ProductServiceTest {
         AddProductDTO dto = new AddProductDTO(
                 "test",
                 BigDecimal.valueOf(100.00),
-                "test", 15, null);
+                "test", 15, "123");
 
         Product product = Product.builder()
                 .name(dto.name())
                 .description(dto.description())
                 .price(dto.price())
+                .sku("123")
+                .stock(15)
                 .build();
 
         when(repository.save(any(Product.class))).thenReturn(product);
