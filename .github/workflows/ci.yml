@@ -2,12 +2,12 @@ name: CI - Space Shop API
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
-  jobs:
-    build:
+jobs:
+  build:
     runs-on: ubuntu-latest
 
     services:
