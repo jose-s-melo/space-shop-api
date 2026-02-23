@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,16 +43,14 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @NotBlank
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Column(name="cpf", nullable = false)
-    @Size(max = 11, min = 11)
     private String cpf;
 
     @Column(name="phone", nullable = false)
-    @Size(max = 11, min = 11)
     private String phone;
 
     public User(Long id, @NotBlank String name, @NotBlank @Email String email, @NotBlank @Size(min = 8) String password,

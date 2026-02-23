@@ -56,6 +56,7 @@ public class ProductService {
                 .price(dto.price())
                 .description(dto.description())
                 .stock(dto.stock())
+                .sku(dto.sku())
                 .build();
 
         Product saved = repository.save(product);

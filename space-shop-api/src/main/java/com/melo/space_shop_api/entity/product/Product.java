@@ -79,6 +79,7 @@ public class Product {
         this.price = builder.price;
         this.description = builder.description;
         this.stock = builder.stock;
+        this.sku = builder.sku;
     }
 
     public boolean addProductCategory(ProductCategory pc) {
@@ -157,6 +158,7 @@ public class Product {
         private BigDecimal price;
         private String description;
         private Integer stock;
+        private String sku;
 
         public ProductBuilder id(Long id) {
             this.id = id;
@@ -180,6 +182,11 @@ public class Product {
 
         public ProductBuilder stock(Integer stock) {
             this.stock = stock;
+            return this;
+        }
+
+        public ProductBuilder sku(String sku) {
+            this.sku = sku;
             return this;
         }
 
