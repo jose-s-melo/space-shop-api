@@ -7,5 +7,6 @@ public record AddProductDTO(
     String name, 
     BigDecimal price, 
     String description, 
-    Integer stock
+    Integer stock,
+    String sku
 ) implements Serializable {}
