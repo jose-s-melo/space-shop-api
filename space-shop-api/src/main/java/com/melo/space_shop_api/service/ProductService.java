@@ -44,7 +44,7 @@ public class ProductService {
                 .build();
 
         Product saved = repository.save(product);
-        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description(), dto.stock());
+        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description(), dto.stock(), dto.sku());
     }
 
     public ProductResponseDTO deleteProduct(Long id) throws ProductNotFoundException {
@@ -57,7 +57,7 @@ public class ProductService {
         repository.deleteById(id);
 
         return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
-                optional.get().getDescription(), optional.get().getStock());
+                optional.get().getDescription(), optional.get().getStock(), optional.get().getSku());
     }
 
     public ProductResponseDTO getProduct(Long id) throws ProductNotFoundException {
@@ -68,7 +68,7 @@ public class ProductService {
         }
 
         return new ProductResponseDTO(optional.get().getId(), optional.get().getName(), optional.get().getPrice(),
-                optional.get().getDescription(), optional.get().getStock());
+                optional.get().getDescription(), optional.get().getStock(), optional.get().getSku());
     }
 
     public ProductResponseDTO updateProduct(Long id, UpdateProductDTO dto) throws ProductNotFoundException {
@@ -94,7 +94,7 @@ public class ProductService {
         }
 
         repository.save(product);
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStock());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStock(), product.getSku());
     }
 
     public List<ProductResponseDTO> getAllProducts() {
@@ -105,7 +105,8 @@ public class ProductService {
                             product.getName(), 
                             product.getPrice(), 
                             product.getDescription(),
-                            product.getStock()
+                            product.getStock(),
+                            product.getSku()
                         ))
                         .toList();
     }
