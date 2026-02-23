@@ -14,9 +14,11 @@ import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.product.ProductCategory;
+import com.melo.space_shop_api.entity.product.ProductCategoryId;
 import com.melo.space_shop_api.exception.CategoryNotFoundException;
 import com.melo.space_shop_api.exception.InvalidCategoryException;
 import com.melo.space_shop_api.exception.InvalidProductException;
+import com.melo.space_shop_api.exception.ProductCategoryNotFoundException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.CategoryRepository;
 import com.melo.space_shop_api.repository.ProductCategoryRepository;
@@ -158,6 +160,20 @@ public class ProductService {
         repository.save(product);
 
         category.addProductCategory(pc);
+        categoryRepository.save(category);
+    }
+
+    public void removeProductCategory(Long productId, Long categoryId) {
+        ProductCategoryId id = new ProductCategoryId(productId, categoryId);
+
+        Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
+        product.removeProductCategory(productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
+        
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException());
+        category.removeProductCategory(productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
+
+        productCategoryRepository.deleteById(id);
+        repository.save(product);
         categoryRepository.save(category);
     }
 
