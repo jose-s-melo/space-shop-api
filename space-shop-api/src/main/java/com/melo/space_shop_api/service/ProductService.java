@@ -13,11 +13,13 @@ import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.Product;
+import com.melo.space_shop_api.entity.product.ProductCategory;
 import com.melo.space_shop_api.exception.CategoryNotFoundException;
 import com.melo.space_shop_api.exception.InvalidCategoryException;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.CategoryRepository;
+import com.melo.space_shop_api.repository.ProductCategoryRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
 
 @Service
@@ -29,6 +31,9 @@ public class ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
     
     /**
      * Adds a new product to the repository after validating the input parameters.
@@ -140,6 +145,16 @@ public class ProductService {
             result = true;
         }
         return result;
+    }
+
+    public void addCategoryToProduct(Long categoryId, Long productId) {
+        Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException());
+        ProductCategory pc = new ProductCategory(product, category);
+        pc = productCategoryRepository.save(pc);
+
+        product.addCategory(pc);
+        repository.save(product);
     }
 
     private boolean validateProductParams(AddProductDTO dto) {
