@@ -9,5 +9,5 @@ CREATE TABLE users (
   
   CONSTRAINT pk_users PRIMARY KEY (id),
   CONSTRAINT uk_users_email UNIQUE (email),
-  CONSTRAINT chk_users_role CHECK (role IN ('ADMIN', 'USER'))
+  CONSTRAINT chk_users_role CHECK (role IN ('ROLE_ADMIN', 'ROLE_USER'))
 );
