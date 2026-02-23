@@ -28,7 +28,7 @@ public class AuthController {
     private AuthenticationService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid RequestLoginDTO dto) {
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody RequestLoginDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 
@@ -45,6 +45,8 @@ public class AuthController {
                             .email(dto.email())
                             .password(encryptedPassword)
                             .role(dto.role())
+                            .cpf(dto.cpf())
+                            .phone(dto.phone())
                             .build();
 
             repository.save(newUser);
