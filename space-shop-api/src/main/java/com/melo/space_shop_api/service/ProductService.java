@@ -13,6 +13,7 @@ import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.Product;
+import com.melo.space_shop_api.exception.CategoryNotFoundException;
 import com.melo.space_shop_api.exception.InvalidCategoryException;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
@@ -130,6 +131,15 @@ public class ProductService {
         } else {
             throw new InvalidCategoryException();
         }
+    }
+
+    public boolean removeCategory(Long id) {
+        boolean result = false;
+        if (categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException()) != null) {
+            categoryRepository.deleteById(id);
+            result = true;
+        }
+        return result;
     }
 
     private boolean validateProductParams(AddProductDTO dto) {
