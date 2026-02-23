@@ -3,25 +3,32 @@ package com.melo.space_shop_api.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.melo.space_shop_api.dto.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
+import com.melo.space_shop_api.dto.product.CategoryResponseDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
+import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.Product;
+import com.melo.space_shop_api.exception.InvalidCategoryException;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
+import com.melo.space_shop_api.repository.CategoryRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
 
 @Service
 public class ProductService {
 
-    private final ProductRepository repository;
 
-    public ProductService(ProductRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private ProductRepository repository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+    
     /**
      * Adds a new product to the repository after validating the input parameters.
      * The method checks if the product name, description, price, and stock are valid. 
@@ -32,7 +39,7 @@ public class ProductService {
      */
     public ProductResponseDTO addProduct(AddProductDTO dto) throws InvalidProductException {
 
-        if (!validateParams(dto)) {
+        if (!validateProductParams(dto)) {
             throw new InvalidProductException();
         }
 
@@ -111,7 +118,21 @@ public class ProductService {
                         .toList();
     }
 
-    private boolean validateParams(AddProductDTO dto) {
+    public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
+        if (validateCategoryParams(dto)) {
+            Category category = new Category();
+            category.setName(dto.type());
+            category.setDescription(dto.description());
+
+            category = categoryRepository.save(category);
+
+            return new CategoryResponseDTO(category.getId(), category.getName(), category.getDescription());
+        } else {
+            throw new InvalidCategoryException();
+        }
+    }
+
+    private boolean validateProductParams(AddProductDTO dto) {
         boolean valid = true;
         if (dto.name() == null || dto.name().strip().isEmpty()) {
             valid = false;
@@ -120,6 +141,19 @@ public class ProductService {
         } else if (dto.price() == null || dto.price().signum() == -1) {
             valid = false;
         } else if (dto.stock() == null || dto.stock().compareTo(0) < 0) {
+            valid = false;
+        } else if (dto.sku() == null || dto.sku().isBlank()) {
+            valid = false;
+        } 
+        return valid;
+    }
+
+    private boolean validateCategoryParams(CategoryRequestDTO dto) {
+        boolean valid = true;
+        if (dto.type() == null) {
+            valid = false;
+        }
+        if (dto.description() == null || dto.description().isBlank()) {
             valid = false;
         }
         return valid;
