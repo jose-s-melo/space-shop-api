@@ -81,6 +81,10 @@ public class Product {
         this.stock = builder.stock;
     }
 
+    public boolean addCategory(ProductCategory pc) {
+        return categories.add(pc);
+    }
+
     public Long getId() {
         return id;
     }
