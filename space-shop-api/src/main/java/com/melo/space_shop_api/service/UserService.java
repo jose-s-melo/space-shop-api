@@ -27,14 +27,14 @@ public class UserService {
         if (validateDTO(dto)) {
             User user = null;
 
-            if (authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
+            if (authService.getCurrentUser().getRole() != null && authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
                 user = User.builder()
                 .name(dto.name())
                 .cpf(dto.cpf())
                 .email(dto.email())
                 .password(encoder.encode(dto.password()))
                 .phone(dto.phone())
-                .role(UserRole.ROLE_USER)
+                .role(dto.role())
                 .build();
             } else {
                 user = User.builder()
@@ -43,7 +43,7 @@ public class UserService {
                 .email(dto.email())
                 .password(encoder.encode(dto.password()))
                 .phone(dto.phone())
-                .role(dto.role())
+                .role(UserRole.ROLE_USER)
                 .build();
             }
 
