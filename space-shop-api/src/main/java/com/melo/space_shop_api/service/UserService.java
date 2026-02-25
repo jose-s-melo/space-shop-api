@@ -18,21 +18,37 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private AuthenticationService authService;
+
+    @Autowired
     private PasswordEncoder encoder;
 
     public UserResponseDTO register(RequestRegisterDTO dto) throws InvalidUserException {
         if (validateDTO(dto)) {
-            User user = User.builder()
-                            .name(dto.name())
-                            .cpf(dto.cpf())
-                            .email(dto.email())
-                            .password(encoder.encode(dto.password()))
-                            .phone(dto.phone())
-                            .role(UserRole.ROLE_USER)
-                            .build();
-    
-            User saved = userRepository.save(user);
-            return new UserResponseDTO(saved.getId(), saved.getName(), saved.getEmail(), saved.getRole(), saved.getCpf(), saved.getPhone());
+            User user = null;
+
+            if (authService.getCurrentUser().getRole() != null && authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
+                user = User.builder()
+                .name(dto.name())
+                .cpf(dto.cpf())
+                .email(dto.email())
+                .password(encoder.encode(dto.password()))
+                .phone(dto.phone())
+                .role(dto.role())
+                .build();
+            } else {
+                user = User.builder()
+                .name(dto.name())
+                .cpf(dto.cpf())
+                .email(dto.email())
+                .password(encoder.encode(dto.password()))
+                .phone(dto.phone())
+                .role(UserRole.ROLE_USER)
+                .build();
+            }
+
+            user = userRepository.save(user);
+            return new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCpf(), user.getPhone());
         } else {
             throw new InvalidUserException();
         }
