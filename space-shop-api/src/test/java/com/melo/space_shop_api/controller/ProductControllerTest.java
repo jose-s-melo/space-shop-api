@@ -2,7 +2,6 @@ package com.melo.space_shop_api.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,4 +68,6 @@ public class ProductControllerTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isForbidden());
     }
+
+    
 }
