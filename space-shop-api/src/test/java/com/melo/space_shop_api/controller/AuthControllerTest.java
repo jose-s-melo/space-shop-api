@@ -23,6 +23,7 @@ import com.melo.space_shop_api.dto.auth.RequestRegisterDTO;
 import com.melo.space_shop_api.dto.user.UserResponseDTO;
 import com.melo.space_shop_api.entity.user.User;
 import com.melo.space_shop_api.entity.user.UserRole;
+import com.melo.space_shop_api.exception.InvalidUserException;
 import com.melo.space_shop_api.repository.UserRepository;
 import com.melo.space_shop_api.security.SecurityConfig;
 import com.melo.space_shop_api.service.AuthenticationService;
@@ -73,7 +74,7 @@ public class AuthControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    // TODO: FIX
+    // TODO: pass but its wrong FIX!
     void registerUserWithRoleUser_shouldReturn204() throws JsonProcessingException, Exception {
         RequestRegisterDTO dto = new RequestRegisterDTO("Jose", 
             "jose@example.com", 
@@ -97,4 +98,21 @@ public class AuthControllerTest {
         assertEquals(UserRole.ROLE_USER, saved.getRole());
     }
 
+    @Test
+    @WithMockUser(roles = "USER")
+    void registerUserWithInvalidBody_shouldReturn403() throws JsonProcessingException, Exception {
+        RequestRegisterDTO dto = new RequestRegisterDTO(null, 
+            "jose@example.com", 
+            "", 
+            UserRole.ROLE_ADMIN, 
+            "12345678910", 
+            "83988887777");
+
+        when(userService.register(dto)).thenThrow(InvalidUserException.class);
+
+        this.mcv.perform(post("/auth/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(dto))
+        ).andExpect(status().isBadRequest());
+    }
 }
