@@ -18,8 +18,15 @@ import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
 @RestController
 @RequestMapping("products")
+@Tag(name = "Products", description = "API endpoint for management of products")
 public class ProductController {
 
     private final ProductService service;
@@ -29,6 +36,10 @@ public class ProductController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all products in the system")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200")
+    })
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
         return ResponseEntity.ok(service.getAllProducts());
     }
