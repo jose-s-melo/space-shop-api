@@ -16,6 +16,7 @@ import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.exception.InvalidProductException;
+import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.service.ProductService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,8 +46,19 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a product by its id")
+    @ApiResponses(value = { 
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "404", description = "Product not found")
+    })
     public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getProduct(id));
+        ResponseEntity<ProductResponseDTO> response;
+        try {
+            response = ResponseEntity.ok(service.getProduct(id));
+        } catch (ProductNotFoundException e) {
+            response = ResponseEntity.notFound().build();
+        }
+        return response;
     }
 
     @PostMapping
