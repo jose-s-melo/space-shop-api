@@ -62,6 +62,11 @@ public class ProductController {
     }
 
     @PostMapping
+    @Operation(summary = "Add a new product to the system")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Product added successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid product data")
+    })
     public ResponseEntity<Void> addProduct(@RequestBody AddProductDTO body) {
         ResponseEntity<Void> response;
         try {
