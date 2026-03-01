@@ -79,11 +79,21 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a product by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Product deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Product not found")
+    })
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        service.deleteProduct(id);
-        return ResponseEntity.ok().build();
+        ResponseEntity<Void> response;
+        try {
+            service.deleteProduct(id);
+            response = ResponseEntity.ok().build();
+        } catch (ProductNotFoundException e) {
+            response = ResponseEntity.notFound().build();
+        }
+        return response;
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateProduct(@PathVariable Long id, 
                                                 @RequestBody UpdateProductDTO body) {
