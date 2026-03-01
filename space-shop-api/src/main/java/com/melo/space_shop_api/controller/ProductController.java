@@ -94,10 +94,24 @@ public class ProductController {
         }
         return response;
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProduct(@PathVariable Long id, 
-                                                @RequestBody UpdateProductDTO body) {
-        service.updateProduct(id, body);
-        return ResponseEntity.ok().build();
+    @Operation(summary = "Update a product by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Product updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid product data"),
+        @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody UpdateProductDTO body) {
+        ResponseEntity<Void> response;
+        try {
+            service.updateProduct(id, body);
+            response = ResponseEntity.noContent().build();
+        } catch (ProductNotFoundException e) {
+            response = ResponseEntity.notFound().build();
+        } catch (InvalidProductException e) {
+            response = ResponseEntity.badRequest().build();
+        }
+        return response;
     }
 }
