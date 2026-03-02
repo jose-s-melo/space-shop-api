@@ -81,6 +81,10 @@ public class UserService {
             result = false;
         }
 
+        if (dto.role() == null || dto.role() != UserRole.ROLE_ADMIN || dto.role() != UserRole.ROLE_USER) {
+            result = false;
+        }
+
         return result;
     }
 }
