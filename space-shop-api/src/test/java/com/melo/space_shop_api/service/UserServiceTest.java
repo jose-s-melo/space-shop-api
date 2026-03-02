@@ -1,6 +1,7 @@
 package com.melo.space_shop_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -180,6 +181,13 @@ public class UserServiceTest {
     @Test
     void testDeleteUserWhenCurrentUserIsCommon() {
         setUp();
-        
+
+        when(authService.getCurrentUser()).thenReturn(user);
+
+        boolean response = userService.delete(1L);
+
+        assertFalse(response);
+
+        verify(userRepository, times(0)).deleteById(1L);
     }
 }
