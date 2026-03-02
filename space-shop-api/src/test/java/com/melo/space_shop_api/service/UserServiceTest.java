@@ -2,6 +2,7 @@ package com.melo.space_shop_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -162,5 +163,23 @@ public class UserServiceTest {
         assertThrows(InvalidUserException.class, () -> userService.register(dtoEmpty));
 
         verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testDeleteUserWhenCurrentUserIsAdmin() {
+        setUp();
+
+        when(authService.getCurrentUser()).thenReturn(authenticatedUser);
+
+        boolean response = userService.delete(1L);
+
+        assertTrue(response);
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteUserWhenCurrentUserIsCommon() {
+        setUp();
+        
     }
 }
