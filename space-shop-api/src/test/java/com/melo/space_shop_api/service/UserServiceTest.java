@@ -152,4 +152,15 @@ public class UserServiceTest {
 
         verify(userRepository, times(0)).save(any(User.class));
     }
+
+    @Test
+    void testRegisterUserWithInvalidDataPhone() {
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", null);
+        RequestRegisterDTO dtoEmpty = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "  ");
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoEmpty));
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
 }
