@@ -60,7 +60,7 @@ public class UserService {
 
     public boolean delete(Long userId) {
         boolean result = false;
-        
+
         if (authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
             userRepository.deleteById(userId);
             result = true;
@@ -92,7 +92,7 @@ public class UserService {
             result = false;
         }
 
-        if (dto.role() == null || dto.role() != UserRole.ROLE_ADMIN || dto.role() != UserRole.ROLE_USER) {
+        if (dto.role() == null || !(dto.role() instanceof UserRole)) {
             result = false;
         }
 
