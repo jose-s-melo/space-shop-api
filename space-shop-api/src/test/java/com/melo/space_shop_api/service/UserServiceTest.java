@@ -8,8 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -126,18 +124,20 @@ public class UserServiceTest {
 
     @Test
     void testRegisterUserWithInvalidDataPassword() {
-        setUp();
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO("jose", "jose@example.com", null, UserRole.ROLE_USER, "12345678910", "83988887777");
+        RequestRegisterDTO dtoEmpty = new RequestRegisterDTO("jose", "jose@example.com", "    ", UserRole.ROLE_USER, "12345678910", "83988887777");
 
-        assertThrows(InvalidUserException.class, () -> userService.register(dtoInvalid));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoEmpty));
 
         verify(userRepository, times(0)).save(any(User.class));
     }
 
     @Test
-    void testRegisterUserWithInvalidData04() {
-        setUp();
+    void testRegisterUserWithInvalidDataRole() {
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO("jose", "jose@example.com", "12345678", null, "12345678910", "83988887777");
 
-        assertThrows(InvalidUserException.class, () -> userService.register(dtoInvalid));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
 
         verify(userRepository, times(0)).save(any(User.class));
     }
