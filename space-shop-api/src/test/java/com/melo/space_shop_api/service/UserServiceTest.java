@@ -1,6 +1,7 @@
 package com.melo.space_shop_api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -20,6 +21,7 @@ import com.melo.space_shop_api.dto.auth.RequestRegisterDTO;
 import com.melo.space_shop_api.dto.user.UserResponseDTO;
 import com.melo.space_shop_api.entity.user.User;
 import com.melo.space_shop_api.entity.user.UserRole;
+import com.melo.space_shop_api.exception.InvalidUserException;
 import com.melo.space_shop_api.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +49,7 @@ public class UserServiceTest {
 
     void setUp() {
         dtoValid = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
-        dtoInvalid = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
+        dtoInvalid = new RequestRegisterDTO("", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
         user = new User(Long.valueOf(1), "jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
         authenticatedUser = new User(Long.valueOf(0), "jose", "root@example.com", "12345678", UserRole.ROLE_ADMIN, "12345678911", "83988887776");
     }
@@ -97,5 +99,46 @@ public class UserServiceTest {
         assertEquals(user.getId(), response.id());
         assertEquals(UserRole.ROLE_USER, response.role());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void testRegisterUserWithInvalidDataName() {
+        setUp();
+
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO(null, "jose@example.com", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoInvalid));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testRegisterUserWithInvalidDataEmail() {
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO("jose", null, "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
+        RequestRegisterDTO dtoEmpty = new RequestRegisterDTO("jose", "    ", "12345678", UserRole.ROLE_USER, "12345678910", "83988887777");
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoEmpty));
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testRegisterUserWithInvalidDataPassword() {
+        setUp();
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoInvalid));
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testRegisterUserWithInvalidData04() {
+        setUp();
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoInvalid));
+
+        verify(userRepository, times(0)).save(any(User.class));
     }
 }

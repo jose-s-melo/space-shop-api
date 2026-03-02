@@ -23,6 +23,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
+    /**
+     * This register an user in the system with that data:
+     * {name, cpf, email, role, password and phone}
+     */
     public UserResponseDTO register(RequestRegisterDTO dto) throws InvalidUserException {
         if (validateDTO(dto)) {
             User user = null;
