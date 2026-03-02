@@ -58,6 +58,17 @@ public class UserService {
         }
     }
 
+    public boolean delete(Long userId) {
+        boolean result = false;
+        
+        if (authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
+            userRepository.deleteById(userId);
+            result = true;
+        }
+
+        return result;
+    }
+
     private boolean validateDTO(RequestRegisterDTO dto) {
         boolean result = true;
 
