@@ -141,4 +141,15 @@ public class UserServiceTest {
 
         verify(userRepository, times(0)).save(any(User.class));
     }
+
+    @Test
+    void testRegisterUserWithInvalidDataCpf() {
+        RequestRegisterDTO dtoNull = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, null, "83988887777");
+        RequestRegisterDTO dtoEmpty = new RequestRegisterDTO("jose", "jose@example.com", "12345678", UserRole.ROLE_USER, "      ", "83988887777");
+
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoNull));
+        assertThrows(InvalidUserException.class, () -> userService.register(dtoEmpty));
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
 }
