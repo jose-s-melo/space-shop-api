@@ -17,11 +17,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.melo.space_shop_api.dto.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
+import com.melo.space_shop_api.entity.product.Category;
+import com.melo.space_shop_api.entity.product.CategoryEnum;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
+import com.melo.space_shop_api.repository.CategoryRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +33,8 @@ public class ProductServiceTest {
 
     @Mock
     private ProductRepository repository;
+
+    @Mock CategoryRepository categoryRepository;
 
     @InjectMocks
     private ProductService service;
@@ -235,6 +241,19 @@ public class ProductServiceTest {
 
         verify(repository, times(1)).findById(defaultProduct.getId());
         verify(repository, times(0)).save(any(Product.class));
+    }
+
+    // Tests for Category
+
+    @Test
+    void testCreateCategory() {
+        CategoryRequestDTO dto = new CategoryRequestDTO(CategoryEnum.ELECTRONICS, "Electronics");
+
+        when(categoryRepository.save(any(Category.class))).thenReturn(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics"));
+
+        service.createCategory(dto);
+
+        verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
 }
