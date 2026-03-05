@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -311,5 +312,16 @@ public class ProductServiceTest {
 
         verify(categoryRepository, times(1)).findById(anyLong());
         verify(categoryRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void testRemoveNotFoundCategory() {
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertFalse(service.removeCategory(1L));
+
+        verify(categoryRepository, times(1)).findById(anyLong());
+        verify(categoryRepository, times(0)).deleteById(anyLong());
     }
 }
