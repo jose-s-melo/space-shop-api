@@ -26,7 +26,6 @@ import com.melo.space_shop_api.repository.ProductRepository;
 @Service
 public class ProductService {
 
-
     @Autowired
     private ProductRepository repository;
 
@@ -35,11 +34,13 @@ public class ProductService {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
-    
+
     /**
      * Adds a new product to the repository after validating the input parameters.
-     * The method checks if the product name, description, price, and stock are valid. 
+     * The method checks if the product name, description, price, and stock are
+     * valid.
      * If any of the parameters are invalid, it throws an InvalidProductException.
+     * 
      * @param dto
      * @return ProductResponseDTO containing the details of the added product
      * @throws InvalidProductException if any of the input parameters are invalid
@@ -59,7 +60,8 @@ public class ProductService {
                 .build();
 
         Product saved = repository.save(product);
-        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description(), dto.stock(), dto.sku());
+        return new ProductResponseDTO(saved.getId(), dto.name(), dto.price(), dto.description(), dto.stock(),
+                dto.sku());
     }
 
     public ProductResponseDTO deleteProduct(Long id) throws ProductNotFoundException {
@@ -101,21 +103,21 @@ public class ProductService {
             throw new InvalidProductException();
         }
 
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStock(), product.getSku());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
+                product.getStock(), product.getSku());
     }
 
     public List<ProductResponseDTO> getAllProducts() {
         return repository.findAll()
-                        .stream()
-                        .map(product -> new ProductResponseDTO(
-                            product.getId(),
-                            product.getName(), 
-                            product.getPrice(), 
-                            product.getDescription(),
-                            product.getStock(),
-                            product.getSku()
-                        ))
-                        .toList();
+                .stream()
+                .map(product -> new ProductResponseDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getDescription(),
+                        product.getStock(),
+                        product.getSku()))
+                .toList();
     }
 
     public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
@@ -144,7 +146,7 @@ public class ProductService {
     public void addCategoryToProduct(Long categoryId, Long productId) {
         Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException());
-        
+
         ProductCategory pc = new ProductCategory(product, category);
         pc = productCategoryRepository.save(pc);
 
@@ -159,10 +161,12 @@ public class ProductService {
         ProductCategoryId id = new ProductCategoryId(productId, categoryId);
 
         Product product = repository.findById(productId).orElseThrow(() -> new ProductNotFoundException());
-        product.removeProductCategory(productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
-        
+        product.removeProductCategory(
+                productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
+
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException());
-        category.removeProductCategory(productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
+        category.removeProductCategory(
+                productCategoryRepository.findById(id).orElseThrow(() -> new ProductCategoryNotFoundException()));
 
         productCategoryRepository.deleteById(id);
         repository.save(product);
@@ -181,7 +185,7 @@ public class ProductService {
             valid = false;
         } else if (dto.sku() == null || dto.sku().isBlank()) {
             valid = false;
-        } 
+        }
         return valid;
     }
 

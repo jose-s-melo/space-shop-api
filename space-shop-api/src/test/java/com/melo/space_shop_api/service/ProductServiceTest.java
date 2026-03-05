@@ -25,6 +25,7 @@ import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.CategoryEnum;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.product.ProductCategory;
+import com.melo.space_shop_api.exception.CategoryNotFoundException;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.CategoryRepository;
@@ -37,12 +38,11 @@ public class ProductServiceTest {
     @Mock
     private ProductRepository repository;
 
-    @Mock 
+    @Mock
     private CategoryRepository categoryRepository;
 
     @Mock
     private ProductCategoryRepository productCategoryRepository;
-
 
     @InjectMocks
     private ProductService service;
@@ -257,7 +257,8 @@ public class ProductServiceTest {
     void testCreateCategory() {
         CategoryRequestDTO dto = new CategoryRequestDTO(CategoryEnum.ELECTRONICS, "Electronics");
 
-        when(categoryRepository.save(any(Category.class))).thenReturn(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics"));
+        when(categoryRepository.save(any(Category.class)))
+                .thenReturn(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics"));
 
         service.createCategory(dto);
 
@@ -266,7 +267,8 @@ public class ProductServiceTest {
 
     @Test
     void testAddCategoryToProduct() {
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
         when(repository.findById(anyLong())).thenReturn(Optional.of(defaultProduct));
 
         service.addCategoryToProduct(1L, 1L);
@@ -274,6 +276,19 @@ public class ProductServiceTest {
         verify(repository, times(1)).save(any(Product.class));
         verify(categoryRepository, times(1)).save(any(Category.class));
         verify(productCategoryRepository, times(1)).save(any(ProductCategory.class));
+    }
+
+    @Test
+    void testAddCategoryNotFoundToProduct() {
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+        when(repository.findById(anyLong())).thenReturn(Optional.of(defaultProduct));
+
+        assertThrows(CategoryNotFoundException.class, () -> service.addCategoryToProduct(1L, defaultProduct.getId()));
+
+        verify(repository, times(0)).save(any(Product.class));
+        verify(categoryRepository, times(0)).save(any(Category.class));
+        verify(productCategoryRepository, times(0)).save(any(ProductCategory.class));
     }
 
 }
