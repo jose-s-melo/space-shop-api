@@ -175,7 +175,7 @@ public class ProductService {
             valid = false;
         } else if (dto.description() == null || dto.description().strip().isEmpty()) {
             valid = false;
-        } else if (dto.price() == null || dto.price().signum() == -1) {
+        } else if (dto.price() == null || dto.price().signum() == -1 || dto.price().signum() == 0) {
             valid = false;
         } else if (dto.stock() == null || dto.stock().compareTo(0) < 0) {
             valid = false;
