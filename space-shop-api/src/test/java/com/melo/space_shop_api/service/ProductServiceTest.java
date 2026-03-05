@@ -222,4 +222,19 @@ public class ProductServiceTest {
         verify(repository, times(0)).save(any(Product.class));
     }
 
+    @Test
+    void testUpdateProductWithPriceLessThanZero() {
+        when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
+
+        AddProductDTO dto = new AddProductDTO(
+                "test",
+                BigDecimal.valueOf(-10.00),
+                "test", 15, "123");
+
+        assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
+
+        verify(repository, times(1)).findById(defaultProduct.getId());
+        verify(repository, times(0)).save(any(Product.class));
+    }
+
 }
