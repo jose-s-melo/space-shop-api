@@ -6,6 +6,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -302,4 +303,13 @@ public class ProductServiceTest {
         verify(productCategoryRepository, times(0)).save(any(ProductCategory.class));
     }
 
+    @Test
+    void testRemoveCategory() {
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
+
+        assertTrue(service.removeCategory(1L));
+
+        verify(categoryRepository, times(1)).findById(anyLong());
+        verify(categoryRepository, times(1)).deleteById(anyLong());
+    }
 }

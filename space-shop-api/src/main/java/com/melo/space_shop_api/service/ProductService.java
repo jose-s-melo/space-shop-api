@@ -136,7 +136,7 @@ public class ProductService {
 
     public boolean removeCategory(Long id) {
         boolean result = false;
-        if (categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException()) != null) {
+        if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
             result = true;
         }
