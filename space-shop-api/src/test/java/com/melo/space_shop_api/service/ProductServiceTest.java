@@ -96,6 +96,20 @@ public class ProductServiceTest {
     }
 
     @Test
+    void testAddProductWithPriceLessThanZero() {
+        AddProductDTO dto = new AddProductDTO(
+                "test",
+                BigDecimal.valueOf(-10.00),
+                "test", 1, "test");
+
+        assertThrows(InvalidProductException.class, () -> {
+            service.addProduct(dto);
+        });
+
+        verify(repository, times(0)).save(any(Product.class));
+    }
+
+    @Test
     void testDeleteProductSuccessfully() {
         Product product = Product.builder()
                 .name("test")
