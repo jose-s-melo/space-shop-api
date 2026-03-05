@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.never;
@@ -23,9 +24,11 @@ import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.CategoryEnum;
 import com.melo.space_shop_api.entity.product.Product;
+import com.melo.space_shop_api.entity.product.ProductCategory;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.CategoryRepository;
+import com.melo.space_shop_api.repository.ProductCategoryRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +37,12 @@ public class ProductServiceTest {
     @Mock
     private ProductRepository repository;
 
-    @Mock CategoryRepository categoryRepository;
+    @Mock 
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private ProductCategoryRepository productCategoryRepository;
+
 
     @InjectMocks
     private ProductService service;
@@ -254,6 +262,18 @@ public class ProductServiceTest {
         service.createCategory(dto);
 
         verify(categoryRepository, times(1)).save(any(Category.class));
+    }
+
+    @Test
+    void testAddCategoryToProduct() {
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
+        when(repository.findById(anyLong())).thenReturn(Optional.of(defaultProduct));
+
+        service.addCategoryToProduct(1L, 1L);
+
+        verify(repository, times(1)).save(any(Product.class));
+        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(productCategoryRepository, times(1)).save(any(ProductCategory.class));
     }
 
 }
