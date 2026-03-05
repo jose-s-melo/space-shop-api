@@ -27,6 +27,7 @@ import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.CategoryEnum;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.product.ProductCategory;
+import com.melo.space_shop_api.entity.product.ProductCategoryId;
 import com.melo.space_shop_api.exception.CategoryNotFoundException;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
@@ -306,7 +307,8 @@ public class ProductServiceTest {
 
     @Test
     void testRemoveCategory() {
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
 
         assertTrue(service.removeCategory(1L));
 
@@ -323,5 +325,22 @@ public class ProductServiceTest {
 
         verify(categoryRepository, times(1)).findById(anyLong());
         verify(categoryRepository, times(0)).deleteById(anyLong());
+    }
+
+    @Test
+    void testRemoveProductCategory() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(defaultProduct));
+        when(categoryRepository.findById(anyLong()))
+                .thenReturn(Optional.of(new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics")));
+        when(productCategoryRepository.findById(any(ProductCategoryId.class)))
+                .thenReturn(Optional.of(new ProductCategory(defaultProduct,
+                        new Category(1L, CategoryEnum.ELECTRONICS, "Eletronics"))));
+
+        service.removeProductCategory(1L, 1L);
+
+        verify(repository, times(1)).save(any(Product.class));
+        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(productCategoryRepository, times(1)).deleteById(any(ProductCategoryId.class));
+        verify(productCategoryRepository, times(2)).findById(any(ProductCategoryId.class));
     }
 }
