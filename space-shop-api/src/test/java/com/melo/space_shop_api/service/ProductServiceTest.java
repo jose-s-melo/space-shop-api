@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
-import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
@@ -138,20 +137,16 @@ public class ProductServiceTest {
     }
 
     @Test
-    void testUpdateProductSuccessfully() {
+    void testUpdateProductUnsuccessfully() {
 
         when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
-        when(repository.save(any(Product.class))).thenReturn(defaultProduct);
 
-        UpdateProductDTO dto = new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null, null, null);
+        AddProductDTO dto = new AddProductDTO("mouuuuse", null, null, null, null);
 
-        ProductResponseDTO response = service.updateProduct(defaultProduct.getId(), dto);
+        assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
 
-        assertEquals(defaultProduct.getId(), response.id());
-        assertEquals("mouuuuse", response.name());
-        assertEquals(defaultProduct.getDescription(), response.description());
 
-        verify(repository, times(1)).save(defaultProduct);
+        verify(repository, times(0)).save(defaultProduct);
 
     }
 
@@ -161,9 +156,23 @@ public class ProductServiceTest {
         when(repository.findById(defaultProduct.getId())).thenReturn(Optional.empty());
 
         Exception e = assertThrows(ProductNotFoundException.class, 
-            () -> service.updateProduct(defaultProduct.getId(), new UpdateProductDTO(defaultProduct.getId(), "mouuuuse", null, null, null, null)));
+            () -> service.updateProduct(defaultProduct.getId(), new AddProductDTO("mouuuuse", null, null, null, null)));
 
         assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
+
+        verify(repository, times(1)).findById(defaultProduct.getId());
+        verify(repository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    void testUpdateProductInvalid() {
+        when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
+
+        AddProductDTO dto = new AddProductDTO("", BigDecimal.valueOf(-100.00), "             ", -1, null);
+
+        InvalidProductException e = assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
+
+        assertEquals(InvalidProductException.DEFAULT_MESSAGE, e.getMessage());
 
         verify(repository, times(1)).findById(defaultProduct.getId());
         verify(repository, times(0)).save(any(Product.class));
