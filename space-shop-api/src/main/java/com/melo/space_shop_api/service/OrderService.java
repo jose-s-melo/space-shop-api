@@ -85,7 +85,7 @@ public class OrderService {
             order.setOrderStatus(OrderStatus.PAID);
             order.setPaymentStatus(PaymentStatus.APPROVED);
             order.setPaidAt(Instant.now());
-        };
+        }
 
         orderRepository.save(order);
         return response;

@@ -10,7 +10,6 @@ import com.melo.space_shop_api.dto.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.CategoryResponseDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
-import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.product.ProductCategory;
@@ -87,29 +86,21 @@ public class ProductService {
                 optional.get().getDescription(), optional.get().getStock(), optional.get().getSku());
     }
 
-    public ProductResponseDTO updateProduct(Long id, UpdateProductDTO dto) throws ProductNotFoundException {
-        Optional<Product> optional = repository.findById(id);
+    public ProductResponseDTO updateProduct(Long id, AddProductDTO dto) throws ProductNotFoundException {
+        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException());
 
-        if (optional.isEmpty()) {
-            throw new ProductNotFoundException();
-        }
-
-        Product product = optional.get();
-
-        if (dto.name() != null && !dto.name().strip().isEmpty()) {
+        if (validateProductParams(dto)) {
             product.setName(dto.name());
-        }
-        if (dto.description() != null && !dto.description().strip().isEmpty()) {
-            product.setDescription(dto.description());
-        }
-        if (dto.price() != null && dto.price().signum() != -1) {
             product.setPrice(dto.price());
-        }
-        if (dto.stock() != null && dto.stock().compareTo(0) >= 0) {
+            product.setDescription(dto.description());
             product.setStock(dto.stock());
+            product.setSku(dto.sku());
+
+            repository.save(product);
+        } else {
+            throw new InvalidProductException();
         }
 
-        repository.save(product);
         return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getStock(), product.getSku());
     }
 
