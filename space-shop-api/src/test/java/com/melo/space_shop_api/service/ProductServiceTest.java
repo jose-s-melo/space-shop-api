@@ -34,11 +34,11 @@ public class ProductServiceTest {
     private ProductService service;
 
     private final Product defaultProduct = new Product(
-                                Long.valueOf(1), 
-                                "mouse", 
-                                BigDecimal.valueOf(24.99), 
-                                "good mouse",
-                                12, "123");
+            Long.valueOf(1),
+            "mouse",
+            BigDecimal.valueOf(24.99),
+            "good mouse",
+            12, "123");
 
     @Test
     void testAddProductSuccessfully() {
@@ -145,7 +145,6 @@ public class ProductServiceTest {
 
         assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
 
-
         verify(repository, times(0)).save(defaultProduct);
 
     }
@@ -155,8 +154,9 @@ public class ProductServiceTest {
 
         when(repository.findById(defaultProduct.getId())).thenReturn(Optional.empty());
 
-        Exception e = assertThrows(ProductNotFoundException.class, 
-            () -> service.updateProduct(defaultProduct.getId(), new AddProductDTO("mouuuuse", null, null, null, null)));
+        Exception e = assertThrows(ProductNotFoundException.class,
+                () -> service.updateProduct(defaultProduct.getId(),
+                        new AddProductDTO("mouuuuse", null, null, null, null)));
 
         assertEquals(ProductNotFoundException.DEFAULT_MESSAGE, e.getMessage());
 
@@ -170,9 +170,25 @@ public class ProductServiceTest {
 
         AddProductDTO dto = new AddProductDTO("", BigDecimal.valueOf(-100.00), "             ", -1, null);
 
-        InvalidProductException e = assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
+        InvalidProductException e = assertThrows(InvalidProductException.class,
+                () -> service.updateProduct(defaultProduct.getId(), dto));
 
         assertEquals(InvalidProductException.DEFAULT_MESSAGE, e.getMessage());
+
+        verify(repository, times(1)).findById(defaultProduct.getId());
+        verify(repository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    void testUpdateProductWithPriceZero() {
+        when(repository.findById(defaultProduct.getId())).thenReturn(Optional.of(defaultProduct));
+
+        AddProductDTO dto = new AddProductDTO(
+                "test",
+                BigDecimal.valueOf(0.00),
+                "test", 15, "123");
+
+        assertThrows(InvalidProductException.class, () -> service.updateProduct(defaultProduct.getId(), dto));
 
         verify(repository, times(1)).findById(defaultProduct.getId());
         verify(repository, times(0)).save(any(Product.class));
