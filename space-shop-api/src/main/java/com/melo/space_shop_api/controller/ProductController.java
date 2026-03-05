@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.melo.space_shop_api.dto.product.AddProductDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
-import com.melo.space_shop_api.dto.product.UpdateProductDTO;
 import com.melo.space_shop_api.exception.InvalidProductException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.service.ProductService;
@@ -102,7 +101,7 @@ public class ProductController {
         @ApiResponse(responseCode = "400", description = "Invalid product data"),
         @ApiResponse(responseCode = "404", description = "Product not found")
     })
-    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody UpdateProductDTO body) {
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody AddProductDTO body) {
         ResponseEntity<Void> response;
         try {
             service.updateProduct(id, body);
