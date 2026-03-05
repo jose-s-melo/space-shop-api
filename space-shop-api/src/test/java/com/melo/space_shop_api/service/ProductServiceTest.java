@@ -291,4 +291,15 @@ public class ProductServiceTest {
         verify(productCategoryRepository, times(0)).save(any(ProductCategory.class));
     }
 
+    @Test
+    void testAddCategoryToProductNotFound() {
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> service.addCategoryToProduct(1L, defaultProduct.getId()));
+
+        verify(repository, times(0)).save(any(Product.class));
+        verify(categoryRepository, times(0)).save(any(Category.class));
+        verify(productCategoryRepository, times(0)).save(any(ProductCategory.class));
+    }
+
 }
