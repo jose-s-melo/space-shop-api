@@ -39,4 +39,14 @@ public class CartService {
         }
     }
 
+    public void clearCart() {
+        User user = authenticationService.getCurrentUser();
+
+        if (user != null) {
+            cartRepository.clear(user.getId());
+        } else {
+            throw new NullPointerException("User cannot be null");
+        }
+    }
+
 }
