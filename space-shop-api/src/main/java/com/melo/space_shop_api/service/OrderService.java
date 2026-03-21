@@ -22,7 +22,6 @@ import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.OrderItemRepository;
 import com.melo.space_shop_api.repository.OrderRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
-import com.melo.space_shop_api.repository.redis.CartRepository;
 
 @Service
 public class OrderService {
@@ -40,7 +39,7 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService;
 
     @Autowired
     private PaymentService paymentService;
@@ -57,7 +56,7 @@ public class OrderService {
     public OrderResponseDTO createOrder() {
         User user = authenticationService.getCurrentUser();
 
-        Map<Long, Integer> products = cartRepository.getCart(user.getId());
+        Map<Long, Integer> products = cartService.get();
         
         if (products != null) {
             Order order = new Order();
