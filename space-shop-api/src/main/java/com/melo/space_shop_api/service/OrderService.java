@@ -16,6 +16,7 @@ import com.melo.space_shop_api.entity.order.OrderStatus;
 import com.melo.space_shop_api.entity.payment.PaymentStatus;
 import com.melo.space_shop_api.entity.product.Product;
 import com.melo.space_shop_api.entity.user.User;
+import com.melo.space_shop_api.exception.EmptyCartException;
 import com.melo.space_shop_api.exception.OrderNotFoundException;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.OrderItemRepository;
@@ -57,32 +58,36 @@ public class OrderService {
         User user = authenticationService.getCurrentUser();
 
         Map<Long, Integer> products = cartRepository.getCart(user.getId());
+        
+        if (products != null) {
+            Order order = new Order();
 
-        Order order = new Order();
+            for (Map.Entry<Long, Integer> entry : products.entrySet()) {
+                Product product = productRepository.findById(entry.getKey())
+                .orElseThrow(() -> new ProductNotFoundException());
+                OrderItem orderItem = new OrderItem();
+                
+                orderItem.setProduct(product);
+                orderItem.setPriceAtPurchase(product.getPrice());
+                orderItem.setQuantity(entry.getValue());
+                orderItem.setOrder(order);
+                
+                OrderItem saved = orderItemRepository.save(orderItem);
+                
+                order.addItem(saved);
+            }
+            
+            order.setOrderStatus(OrderStatus.CREATED);
+            order.setPaymentStatus(PaymentStatus.PENDING);
+            order.setUser(user);
+            
+            PaymentResponseDTO paymentResponse = paymentService.createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
+            Order saved = orderRepository.save(order);
 
-        for (Map.Entry<Long, Integer> entry : products.entrySet()) {
-            Product product = productRepository.findById(entry.getKey())
-                    .orElseThrow(() -> new ProductNotFoundException());
-            OrderItem orderItem = new OrderItem();
-
-            orderItem.setProduct(product);
-            orderItem.setPriceAtPurchase(product.getPrice());
-            orderItem.setQuantity(entry.getValue());
-            orderItem.setOrder(order);
-
-            OrderItem saved = orderItemRepository.save(orderItem);
-
-            order.addItem(saved);
+            return new OrderResponseDTO(saved.getId(), user.getId(), paymentResponse.id());
+        } else {
+            throw new EmptyCartException();
         }
-
-        order.setOrderStatus(OrderStatus.CREATED);
-        order.setPaymentStatus(PaymentStatus.PENDING);
-        order.setUser(user);
-
-        PaymentResponseDTO paymentResponse = paymentService
-                .createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
-        Order saved = orderRepository.save(order);
-        return new OrderResponseDTO(saved.getId(), user.getId(), paymentResponse.id());
     }
 
     public PaymentMessageDTO payOrder(Long orderId) {
