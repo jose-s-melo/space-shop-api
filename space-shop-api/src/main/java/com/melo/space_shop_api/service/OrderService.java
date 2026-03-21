@@ -44,6 +44,15 @@ public class OrderService {
     @Autowired
     private PaymentService paymentService;
 
+    /**
+     * This method creates an order for the current user based on the products in
+     * their cart. It retrieves the current user, gets the products from the cart,
+     * creates an order and order items, and then initiates a payment process.
+     * Finally, it saves the order and returns an OrderResponseDTO containing the
+     * order ID, user ID, and payment ID.
+     * 
+     * @return OrderResponseDTO containing the order ID, user ID, and payment ID.
+     */
     public OrderResponseDTO createOrder() {
         User user = authenticationService.getCurrentUser();
 
@@ -52,14 +61,15 @@ public class OrderService {
         Order order = new Order();
 
         for (Map.Entry<Long, Integer> entry : products.entrySet()) {
-            Product product = productRepository.findById(entry.getKey()).orElseThrow(() -> new ProductNotFoundException());
+            Product product = productRepository.findById(entry.getKey())
+                    .orElseThrow(() -> new ProductNotFoundException());
             OrderItem orderItem = new OrderItem();
-            
+
             orderItem.setProduct(product);
             orderItem.setPriceAtPurchase(product.getPrice());
             orderItem.setQuantity(entry.getValue());
             orderItem.setOrder(order);
-            
+
             OrderItem saved = orderItemRepository.save(orderItem);
 
             order.addItem(saved);
@@ -68,8 +78,9 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.CREATED);
         order.setPaymentStatus(PaymentStatus.PENDING);
         order.setUser(user);
-        
-        PaymentResponseDTO paymentResponse = paymentService.createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
+
+        PaymentResponseDTO paymentResponse = paymentService
+                .createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
         Order saved = orderRepository.save(order);
         return new OrderResponseDTO(saved.getId(), user.getId(), paymentResponse.id());
     }
@@ -80,7 +91,7 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
 
         PaymentMessageDTO response = paymentService.pay(orderId);
-        
+
         if (response.message().equals("Approved")) {
             order.setOrderStatus(OrderStatus.PAID);
             order.setPaymentStatus(PaymentStatus.APPROVED);
