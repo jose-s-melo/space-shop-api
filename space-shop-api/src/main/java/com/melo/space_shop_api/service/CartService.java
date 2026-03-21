@@ -1,5 +1,7 @@
 package com.melo.space_shop_api.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,16 @@ public class CartService {
 
         if (user != null) {
             cartRepository.clear(user.getId());
+        } else {
+            throw new NullPointerException("User cannot be null");
+        }
+    }
+
+    public Map<Long, Integer> get() {
+        User user = authenticationService.getCurrentUser();
+
+        if (user != null) {
+            return cartRepository.getCart(user.getId());
         } else {
             throw new NullPointerException("User cannot be null");
         }
