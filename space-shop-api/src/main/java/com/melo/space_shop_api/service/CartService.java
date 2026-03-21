@@ -30,4 +30,14 @@ public class CartService {
         }
     }
 
+    public void removeProduct(Long productId) {
+        User user = authenticationService.getCurrentUser();
+
+        if (user != null && productId != null) {
+            cartRepository.removeItem(user.getId(), productId);
+        } else {
+            throw new NullPointerException("Product or user cannot be null");
+        }
+    }
+
 }
