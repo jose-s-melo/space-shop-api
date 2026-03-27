@@ -23,6 +23,8 @@ import com.melo.space_shop_api.repository.OrderItemRepository;
 import com.melo.space_shop_api.repository.OrderRepository;
 import com.melo.space_shop_api.repository.ProductRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class OrderService {
 
@@ -89,20 +91,28 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public PaymentMessageDTO payOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
-        order.setPaymentStatus(PaymentStatus.PENDING);
-        order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
 
-        PaymentMessageDTO response = paymentService.pay(orderId);
+        PaymentMessageDTO response = null;
 
-        if (response.message().equals("Approved")) {
-            order.setOrderStatus(OrderStatus.PAID);
-            order.setPaymentStatus(PaymentStatus.APPROVED);
-            order.setPaidAt(Instant.now());
+        if (order.getOrderStatus() != OrderStatus.CANCELED) {
+            order.setPaymentStatus(PaymentStatus.PENDING);
+            order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+    
+            response = paymentService.pay(orderId);
+    
+            if (response.message().equals("Approved")) {
+                order.setOrderStatus(OrderStatus.PAID);
+                order.setPaymentStatus(PaymentStatus.APPROVED);
+                order.setPaidAt(Instant.now());
+            }
+    
+            orderRepository.save(order);
+
         }
 
-        orderRepository.save(order);
         return response;
     }
 
