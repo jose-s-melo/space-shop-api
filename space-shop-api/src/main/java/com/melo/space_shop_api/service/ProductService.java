@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.melo.space_shop_api.dto.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
+import com.melo.space_shop_api.dto.product.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.CategoryResponseDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.entity.product.Category;

@@ -20,8 +20,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.melo.space_shop_api.dto.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.AddProductDTO;
+import com.melo.space_shop_api.dto.product.CategoryRequestDTO;
 import com.melo.space_shop_api.dto.product.ProductResponseDTO;
 import com.melo.space_shop_api.entity.product.Category;
 import com.melo.space_shop_api.entity.product.CategoryEnum;

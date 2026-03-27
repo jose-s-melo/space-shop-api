@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.melo.space_shop_api.dto.order.OrderDetailResponseDTO;
 import com.melo.space_shop_api.dto.order.OrderResponseDTO;
 import com.melo.space_shop_api.dto.payment.PaymentMessageDTO;
 import com.melo.space_shop_api.dto.payment.PaymentRequestDTO;
@@ -60,30 +61,31 @@ public class OrderService {
         User user = authenticationService.getCurrentUser();
 
         Map<Long, Integer> products = cartService.get();
-        
+
         if (products != null) {
             Order order = new Order();
 
             for (Map.Entry<Long, Integer> entry : products.entrySet()) {
                 Product product = productRepository.findById(entry.getKey())
-                .orElseThrow(() -> new ProductNotFoundException());
+                        .orElseThrow(() -> new ProductNotFoundException());
                 OrderItem orderItem = new OrderItem();
-                
+
                 orderItem.setProduct(product);
                 orderItem.setPriceAtPurchase(product.getPrice());
                 orderItem.setQuantity(entry.getValue());
                 orderItem.setOrder(order);
-                
+
                 OrderItem saved = orderItemRepository.save(orderItem);
-                
+
                 order.addItem(saved);
             }
-            
+
             order.setOrderStatus(OrderStatus.CREATED);
             order.setPaymentStatus(PaymentStatus.PENDING);
             order.setUser(user);
-            
-            PaymentResponseDTO paymentResponse = paymentService.createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
+
+            PaymentResponseDTO paymentResponse = paymentService
+                    .createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
             Order saved = orderRepository.save(order);
 
             return new OrderResponseDTO(saved.getId(), user.getId(), paymentResponse.id());
@@ -101,15 +103,15 @@ public class OrderService {
         if (order.getOrderStatus() != OrderStatus.CANCELED) {
             order.setPaymentStatus(PaymentStatus.PENDING);
             order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
-    
+
             response = paymentService.pay(orderId);
-    
+
             if (response.message().equals("Approved")) {
                 order.setOrderStatus(OrderStatus.PAID);
                 order.setPaymentStatus(PaymentStatus.APPROVED);
                 order.setPaidAt(Instant.now());
             }
-    
+
             orderRepository.save(order);
 
         }
@@ -141,5 +143,19 @@ public class OrderService {
     public BigDecimal getTotal(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
         return order.getTotal();
+    }
+
+    public OrderDetailResponseDTO getOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+
+        return new OrderDetailResponseDTO(order.getId(), 
+                                            order.getUser().getId(), 
+                                            order.getOrderStatus(),
+                                            order.getPaymentStatus(), 
+                                            order.getCreatedAt(), 
+                                            order.getUpdatedAt(), 
+                                            order.getPaidAt(),
+                                            order.getShippedAt(), 
+                                            order.getDeliveredAt());
     }
 }

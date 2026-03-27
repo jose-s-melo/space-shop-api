@@ -1,4 +1,4 @@
-package com.melo.space_shop_api.dto;
+package com.melo.space_shop_api.dto.product;
 
 import java.io.Serializable;
 
