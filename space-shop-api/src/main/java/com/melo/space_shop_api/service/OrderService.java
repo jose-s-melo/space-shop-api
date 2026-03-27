@@ -1,5 +1,6 @@
 package com.melo.space_shop_api.service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Map;
 
@@ -135,5 +136,10 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
         order.setDeliveredAt(date);
         orderRepository.save(order);
+    }
+
+    public BigDecimal getTotal(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+        return order.getTotal();
     }
 }
