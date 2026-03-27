@@ -1,9 +1,12 @@
 package com.melo.space_shop_api.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import com.melo.space_shop_api.service.CartService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
+
 @RestController
 @RequestMapping("cart")
 public class CartController {
@@ -23,7 +27,7 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody AddCartRequestDTO dto) {
+    public ResponseEntity<Void> addProduct(@RequestBody AddCartRequestDTO dto) {
         try {
             cartService.addProduct(dto.productId(), dto.quantity());
             return ResponseEntity.noContent().build();
@@ -37,7 +41,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeProduct(@PathVariable Long productId) {
+    public ResponseEntity<Void> removeProduct(@PathVariable Long productId) {
         try {
             cartService.removeProduct(productId);
             return ResponseEntity.noContent().build();
@@ -47,7 +51,7 @@ public class CartController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> clear() {
+    public ResponseEntity<Void> clear() {
         try {
             cartService.clearCart();
             return ResponseEntity.noContent().build();
@@ -55,4 +59,10 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+    @GetMapping
+    public ResponseEntity<Map<Long, Integer>> getCart() {
+        return ResponseEntity.ok(cartService.get());
+    }
+    
 }
