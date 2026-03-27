@@ -130,4 +130,10 @@ public class OrderService {
             orderRepository.save(order);
         }
     }
+
+    public void deliveredAt(Long orderId, Instant date) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException());
+        order.setDeliveredAt(date);
+        orderRepository.save(order);
+    }
 }
