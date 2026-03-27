@@ -32,6 +32,11 @@ public class CartRepository {
         redisTemplate.opsForHash().delete(buildKey(userId));
     }
 
+    /**
+     * 
+     * @param userId
+     * @return Map of product id and quantity
+     */
     public Map<Long, Integer> getCart(Long userId) {
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(buildKey(userId));
 
