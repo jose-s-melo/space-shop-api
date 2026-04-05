@@ -57,6 +57,7 @@ public class OrderService {
      * 
      * @return OrderResponseDTO containing the order ID, user ID, and payment ID.
      */
+    @Transactional
     public OrderResponseDTO createOrder() {
         User user = authenticationService.getCurrentUser();
 
@@ -64,6 +65,10 @@ public class OrderService {
 
         if (products != null) {
             Order order = new Order();
+            order.setOrderStatus(OrderStatus.CREATED);
+            order.setPaymentStatus(PaymentStatus.PENDING);
+            order.setUser(user);
+            orderRepository.save(order);
 
             for (Map.Entry<Long, Integer> entry : products.entrySet()) {
                 Product product = productRepository.findById(entry.getKey())
@@ -80,9 +85,6 @@ public class OrderService {
                 order.addItem(saved);
             }
 
-            order.setOrderStatus(OrderStatus.CREATED);
-            order.setPaymentStatus(PaymentStatus.PENDING);
-            order.setUser(user);
 
             PaymentResponseDTO paymentResponse = paymentService
                     .createPayment(new PaymentRequestDTO(order.getTotal(), user.getId()));
