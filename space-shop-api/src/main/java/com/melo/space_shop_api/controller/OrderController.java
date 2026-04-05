@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 @RestController
-@RequestMapping("orders")
+@RequestMapping("/orders")
 public class OrderController {
 
     @Autowired

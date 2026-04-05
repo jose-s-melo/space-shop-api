@@ -17,7 +17,7 @@ import com.melo.space_shop_api.service.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
