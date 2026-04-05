@@ -80,7 +80,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<? extends GrantedAuthority> authorities;
 
-        if (role == UserRole.ROLE_ADMIN) {
+        if (role == UserRole.ADMIN) {
             authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else {
             authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));

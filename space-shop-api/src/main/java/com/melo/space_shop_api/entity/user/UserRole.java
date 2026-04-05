@@ -1,8 +1,8 @@
 package com.melo.space_shop_api.entity.user;
 
 public enum UserRole {
-    ROLE_ADMIN("ROLE_ADMIN"),
-    ROLE_USER("ROLE_USER");
+    ADMIN("ADMIN"),
+    USER("USER");
 
     private String role;
 

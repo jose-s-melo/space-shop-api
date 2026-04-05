@@ -1,12 +1,9 @@
 package com.melo.space_shop_api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -16,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,7 +59,7 @@ public class AuthControllerTest {
         RequestRegisterDTO dto = new RequestRegisterDTO("Jose", 
             "jose@example.com", 
             "12345678", 
-            UserRole.ROLE_ADMIN, 
+            UserRole.ADMIN, 
             "12345678910", 
             "83988887777");
 
@@ -79,13 +78,13 @@ public class AuthControllerTest {
         RequestRegisterDTO dto = new RequestRegisterDTO("Jose", 
             "jose@example.com", 
             "12345678", 
-            UserRole.ROLE_ADMIN, 
+            UserRole.ADMIN, 
             "12345678910", 
             "83988887777");
 
-        when(userRepository.save(any(User.class))).thenReturn(new User(Long.valueOf(1), dto.name(), dto.email(), dto.password(), UserRole.ROLE_USER, dto.cpf(), dto.phone()));
-        when(userRepository.findByEmail(dto.email())).thenReturn((UserDetails) new User(Long.valueOf(1), dto.name(), dto.email(), dto.password(), UserRole.ROLE_USER, dto.cpf(), dto.phone()));
-        when(userService.register(any(RequestRegisterDTO.class))).thenReturn(new UserResponseDTO(Long.valueOf(1), dto.name(), dto.email(), UserRole.ROLE_USER, dto.cpf(), dto.phone()));
+        when(userRepository.save(any(User.class))).thenReturn(new User(Long.valueOf(1), dto.name(), dto.email(), dto.password(), UserRole.USER, dto.cpf(), dto.phone()));
+        when(userRepository.findByEmail(dto.email())).thenReturn((UserDetails) new User(Long.valueOf(1), dto.name(), dto.email(), dto.password(), UserRole.USER, dto.cpf(), dto.phone()));
+        when(userService.register(any(RequestRegisterDTO.class))).thenReturn(new UserResponseDTO(Long.valueOf(1), dto.name(), dto.email(), UserRole.USER, dto.cpf(), dto.phone()));
 
 
         this.mcv.perform(post("/auth/register")
@@ -95,7 +94,7 @@ public class AuthControllerTest {
 
         User saved = (User) userRepository.findByEmail(dto.email());
 
-        assertEquals(UserRole.ROLE_USER, saved.getRole());
+        assertEquals(UserRole.USER, saved.getRole());
     }
 
     @Test
@@ -104,7 +103,7 @@ public class AuthControllerTest {
         RequestRegisterDTO dto = new RequestRegisterDTO(null, 
             "jose@example.com", 
             "", 
-            UserRole.ROLE_ADMIN, 
+            UserRole.ADMIN, 
             "12345678910", 
             "83988887777");
 

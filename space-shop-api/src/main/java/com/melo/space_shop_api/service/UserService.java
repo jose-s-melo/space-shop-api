@@ -31,7 +31,7 @@ public class UserService {
         if (validateDTO(dto)) {
             User user = null;
 
-            if (authService.getCurrentUser().getRole() != null && authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
+            if (authService.getCurrentUser() != null && authService.getCurrentUser().getRole() != null && authService.getCurrentUser().getRole() == UserRole.ADMIN) {
                 user = User.builder()
                 .name(dto.name())
                 .cpf(dto.cpf())
@@ -47,7 +47,7 @@ public class UserService {
                 .email(dto.email())
                 .password(encoder.encode(dto.password()))
                 .phone(dto.phone())
-                .role(UserRole.ROLE_USER)
+                .role(UserRole.USER)
                 .build();
             }
 
@@ -61,7 +61,7 @@ public class UserService {
     public boolean delete(Long userId) {
         boolean result = false;
 
-        if (authService.getCurrentUser().getRole() == UserRole.ROLE_ADMIN) {
+        if (authService.getCurrentUser().getRole() == UserRole.ADMIN) {
             userRepository.deleteById(userId);
             result = true;
         }
