@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +17,10 @@ import com.melo.space_shop_api.dto.cart.AddCartRequestDTO;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.service.CartService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 @RestController
-@RequestMapping("cart")
+@RequestMapping("/cart")
 public class CartController {
 
     @Autowired
@@ -29,11 +29,12 @@ public class CartController {
     @PostMapping
     public ResponseEntity<Void> addProduct(@RequestBody AddCartRequestDTO dto) {
         try {
-            cartService.addProduct(dto.productId(), dto.quantity());
+            cartService.addProduct(dto);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (NullPointerException e) {
+            System.err.println(e.getMessage());
             return ResponseEntity.unprocessableContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

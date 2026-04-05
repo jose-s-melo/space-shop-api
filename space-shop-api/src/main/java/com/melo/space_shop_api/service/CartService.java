@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.melo.space_shop_api.dto.cart.AddCartRequestDTO;
 import com.melo.space_shop_api.entity.user.User;
 import com.melo.space_shop_api.exception.ProductNotFoundException;
 import com.melo.space_shop_api.repository.ProductRepository;
@@ -22,16 +23,20 @@ public class CartService {
     @Autowired
     private AuthenticationService authenticationService;
 
-    public void addProduct(Long productId, Integer quantity) {
+    public void addProduct(AddCartRequestDTO dto) {
         User user = authenticationService.getCurrentUser();
 
-        if (user != null && productId != null) {
-            if (!productRepository.existsById(productId)) {
+        System.out.println(dto);
+        System.out.println(dto.product());
+        System.out.println(dto.product());
+
+        if (user != null && dto.product() != null) {
+            if (!productRepository.existsById(dto.product())) {
                 throw new ProductNotFoundException();
             }
 
-            if (quantity != null && quantity.compareTo(0) > 0) {
-                cartRepository.addItem(user.getId(), productId, quantity);
+            if (dto.quantity() != null && dto.quantity().compareTo(0) > 0) {
+                cartRepository.addItem(user.getId(), dto.product(), dto.quantity());
             } else {
                 throw new IllegalArgumentException("Quantity cannot be negative or zero");
             }
