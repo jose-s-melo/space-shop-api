@@ -2,13 +2,14 @@ package com.melo.space_shop_api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import com.melo.space_shop_api.dto.payment.PaymentAuthorization;
+import com.melo.space_shop_api.dto.payment.PaymentAuthorizeResponseDTO;
 import com.melo.space_shop_api.dto.payment.PaymentMessageDTO;
 import com.melo.space_shop_api.dto.payment.PaymentRequestDTO;
 import com.melo.space_shop_api.dto.payment.PaymentResponseDTO;
 import com.melo.space_shop_api.entity.payment.Payment;
-import com.melo.space_shop_api.entity.payment.PaymentMethod;
 import com.melo.space_shop_api.entity.payment.PaymentStatus;
 import com.melo.space_shop_api.entity.user.User;
 import com.melo.space_shop_api.exception.PaymentNotFoundException;
@@ -71,6 +72,11 @@ public class PaymentService {
     }
 
     private PaymentAuthorization paymentAuthorization() {
-        return new PaymentAuthorization(true, PaymentMethod.PIX);
+        PaymentAuthorizeResponseDTO response;
+
+        RestClient client = RestClient.create();
+        response = client.get().uri("localhost:8080/payment-authorize").retrieve().body(PaymentAuthorizeResponseDTO.class);
+
+        return new PaymentAuthorization(response.authorize(), response.method());
     }
 }
