@@ -38,3 +38,5 @@ build/
 *.gif
 *.bmp
 *.xcf
+
+init.json
